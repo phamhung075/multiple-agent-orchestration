@@ -1,0 +1,8 @@
+# Periodic reminder for one seat. Register with:
+#   rig watchdog register --spec wake-reminder.yaml --policy periodic-reminder \
+#       --target-session dev-owner@my-team --interval-seconds 600 --registered-by human@host
+# Stop it when the job is finished:  rig watchdog stop <jobId>
+policy: periodic-reminder
+target:
+  session: dev-owner@my-team       # EDIT
+message: "Keep going on the mission in CULTURE.md: re-read the ledger, and if any 'todo' rows remain, do the next slice now. Do not wait for the other seat."

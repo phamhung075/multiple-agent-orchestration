@@ -1,0 +1,35 @@
+# Two-seat Claude Code team: an owner who builds and a checker who reviews independently.
+# Copy next to your project (or into ~/.openrig/specs/<team>/), then edit the marked lines.
+# Validate:  rig spec validate rig.yaml && rig spec preflight rig.yaml
+# Launch:    rig up ./rig.yaml
+version: "0.2"
+name: my-team                      # EDIT: rig name; seats become dev-owner@my-team, dev-check@my-team
+summary: >
+  Two Claude Code seats working in one repository: an owner and an independent checker.
+
+culture_file: CULTURE.md           # relative to this file; read by each seat at launch
+permission_policy: builtin:yolo    # OPTIONAL: Claude launches with --dangerously-skip-permissions. Read docs/13 first.
+                                   # Remove this line for the safer default (--permission-mode acceptEdits).
+
+pods:
+  - id: dev
+    label: My project
+    members:
+      - id: owner
+        # EDIT: path RELATIVE to this file. Absolute "local:" refs are rejected.
+        # Find the shipped agents folder, then: realpath --relative-to=. <that folder>/development/implementer
+        agent_ref: "local:../openrig/packages/daemon/specs/agents/development/implementer"
+        runtime: claude-code       # or: agy, codex
+        profile: default
+        cwd: "."                   # EDIT: the repository the seat works in (relative or absolute)
+      - id: check
+        agent_ref: "local:../openrig/packages/daemon/specs/agents/development/qa"
+        runtime: claude-code
+        profile: default
+        cwd: "."
+    edges:
+      - kind: delegates_to
+        from: owner
+        to: check
+
+edges: []
