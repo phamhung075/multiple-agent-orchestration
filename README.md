@@ -1,4 +1,4 @@
-# Multiple-Agent Orchestration — from zero to hero
+# Multiple-Agent Orchestration
 
 A practical, step-by-step guide to running a **team of AI coding agents** on your own machine:
 several Claude Code (and Antigravity `agy`) sessions that work in parallel, hand work to each other
