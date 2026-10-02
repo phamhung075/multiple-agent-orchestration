@@ -45,6 +45,9 @@ All commands were used in the real run. `<seat>` means `member@rig`, for example
 | Stop (and snapshot) | `rig down <rig> --snapshot` |
 | Stop and delete the record | `rig down <rig> --delete` |
 | Start the daemon | `rig daemon start` |
+| Daemon down after a reboot, restore chosen rigs | `rig start --rigs <name> …` (headless; plain `rig start` needs a TTY) |
+| Restore everything that was running | `rig start --last` (or `--all` for every restorable snapshot) |
+| Hide a rig, keep all data | `rig archive <rigId>` / `rig unarchive <rigId>` / `rig ps --include-archived` |
 
 Restoring a rig that still has live sessions fails with HTTP 409. Run `rig down <rig>` first.
 

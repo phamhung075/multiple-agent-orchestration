@@ -30,7 +30,17 @@ The same applies to `rig seat set-permissions`.
 
 ### Two records with the same rig name
 A failed or repeated `rig up` can leave a stopped record and a new one. `rig ps --filter status=stopped`
-shows both. → Use `rig down <rig> --delete` on the broken one, or refer to rigs by id.
+shows both. → Refer to rigs by id. `rig archive <rigId>` hides a record and keeps its data (reverse with
+`rig unarchive`); `rig down <rig> --delete` removes it for good.
+
+### The UI shows `Startup failed ... Cannot establish managed input target <seat>`
+Usually a stale failed record on an old rig, not a live launch: `curl -s http://127.0.0.1:7433/api/ps`
+shows `status: stopped` and the seats show `startupStatus: failed`, `startupCompletedAt: null`. →
+`rig archive <rigId>`, or restore it on purpose.
+
+### `rig expand` times out (`outcome is UNKNOWN`)
+The daemon did not answer within 5 seconds, but the pod may exist. → `rig ps --nodes --rig <rig>`
+before retrying.
 
 ## Seats
 
@@ -53,6 +63,19 @@ failed. Check `rig capture <seat>`.
 
 ### `Harness launch failed: Failed to send launch command`
 The pane was not ready or the terminal died. → `rig down <rig>`, then `rig up <rig> --existing`.
+
+### `rig send` refuses an `agy` seat: "shows a bare sh shell"
+The `agy` runtime runs as `bash → sh → agy`, so the send guard sees `sh` in the foreground and thinks
+the runtime is gone **(verified 2026-10-02; looks like a false positive)**. Confirm first:
+`rig capture <seat>` shows the agy screen and `pstree -p $(tmux list-panes -t <seat> -F '#{pane_pid}')`
+shows `agy`. Then type into the pane yourself:
+`tmux send-keys -t <seat> -l "<text>"; sleep 1; tmux send-keys -t <seat> Enter`. If agy is really not
+running, relaunch the seat instead.
+
+### A message was sent but the seat does nothing with it
+Look at the screen. `agy` shows `Press up to edit queued messages`: the message waits until its current
+turn ends, which can be a long time. Claude Code loses track of it if the seat is mid-compaction. →
+Wait for a turn boundary, or interrupt (Escape) and resend a short, imperative instruction.
 
 ### Two seats waiting on each other
 Add to the culture: "owner never waits for the checker; queue the slice and start the next one", and
@@ -85,7 +108,14 @@ stale states for a minute. Wait, re-run `rig ps`, then restore what is stopped.
 ## DeepSeek
 
 ### Seats have the DeepSeek MCP attached but never call it
-Nothing told them to. → Add the offload section to `CULTURE.md` and message the seats (chapters 8–9).
+Nothing told them to, or they were told and did not act. → Add the offload section to `CULTURE.md`,
+message the seats, then **count jobs**: `node $R list | grep job-$(date -u +%Y%m%d)`. Zero means no
+delegation, whatever the seats said (chapters 8–9).
+
+### Every DeepSeek job ends `error`, result says `Insufficient Balance`
+The DeepSeek account is out of credit. `doctor` can still pass. → Run
+`node $R start "Reply with the single word OK." --read-only --json`; `error` means top up, `done` means
+credit is back. Until then seats should port directly and report once, not retry in a loop.
 
 ### `dsh-offload.mjs doctor` reports a model-name error
 The `acp` profile pins a model your provider route does not accept. →

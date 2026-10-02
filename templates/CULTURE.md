@@ -32,6 +32,14 @@ Review gate: a worker result is a draft. Before marking a row `done`, read the d
 source, run the build and tests, fix issues; the checker still reviews every slice. A job that fails
 the build twice is finished by hand. Never put credentials into a worker prompt.
 
+## Team structure: the owner leads DeepSeek workers
+
+The owner is the team leader and DeepSeek jobs are its workers. Per slice: start one detached job per
+module first, then review results while the rest run, then queue the slice to the checker. Delegation
+is the default for mechanical ports. If jobs fail with "Insufficient Balance", port directly and tell
+the user once through the queue; do not retry in a loop. If two teams share the repo, follow
+TEAM_SPLIT.md (ownership by bounded context).
+
 ## Test account
 
 When every row is `done`, run end-to-end tests using the account in <PATH TO PRIVATE ENV FILE>

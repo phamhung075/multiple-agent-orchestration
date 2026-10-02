@@ -13,7 +13,21 @@ reviewed by the owner and the checker.**
  launch next wave                                                          verdict on the queue
 ```
 
-## 9.1 Why background jobs and not subagents
+## 9.0 The ladder: owner leads, workers do
+
+Each team is a ladder. The **owner** is the team leader; the **DeepSeek jobs** are its workers; the
+**checker** reviews the leader's integrated output. The owner plans a slice, splits it into
+self-contained module jobs, starts them all (`--detach`), reviews each result against the source while
+the rest run, then queues the slice to the checker. Writing code by hand is for design-heavy modules,
+for a job that failed the build twice, or when the workers are unavailable. Delegation is the default
+for mechanical work, not an option the seat may skip.
+
+Stating this once in `CULTURE.md` was **not enough** (2026-10-02): seats busy in a long turn, or in the
+middle of a compaction, never acted on it. What worked better: an imperative message naming the exact
+command and the exact rows ("start one detached job per module for the next 5–8 todo rows, report the
+job ids"), plus checking that jobs exist (9.7).
+
+
 
 | | In-session subagent | DeepSeek job |
 |---|---|---|
@@ -100,6 +114,8 @@ Never trust "tests pass" from a worker. Never put credentials or production deta
 | Symptom | Cause | Fix |
 |---|---|---|
 | Seats had DeepSeek attached but never used it | Nothing told them to | Add the offload section to `CULTURE.md` **and** message the seats (chapter 8) |
+| Told to delegate, still no jobs | Message sat in the seat's queue behind a long turn, or was lost in a compaction | Look for jobs, not words: `node $R list \| grep job-$(date -u +%Y%m%d)`; resend an imperative, specific order (9.0) |
+| Every job ends `error` in seconds, `Insufficient Balance` | The DeepSeek account has no credit | Top up, then prove it with a tiny job: `node $R start "Reply OK" --read-only --json` must end `done`. Tell seats not to retry in a loop |
 | Count of `mcp__deepseek__*` calls is 0 but jobs exist | The owner used the runner from Bash, not the MCP tool | Count Bash calls to `dsh-offload.mjs`, and `node $R list` |
 | Two jobs wrote the same file | Overlapping module lists | One module or one small group per job; skip files that already exist |
 | Job edited unrelated files | The prompt did not forbid it | Keep the "write only under X" rule; the checker's diff review catches it |

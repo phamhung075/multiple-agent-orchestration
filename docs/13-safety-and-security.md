@@ -49,6 +49,7 @@ Template: [../templates/e2e-account.env.example](../templates/e2e-account.env.ex
 - Do not commit unless asked. Do not merge or push until the job is done and tested.
 - Never copy credentials into the repo, logs, commits, queue items or DeepSeek prompts.
 - DeepSeek workers write only under <new dir> and never run git writes.
+- Production deploys are authorized per rig by the user, in words. Never copy such a section from another culture file.
 ```
 
 ## 13.5 What the tools themselves change

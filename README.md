@@ -6,7 +6,9 @@ through a durable queue, and push the bulk of the typing to cheap **DeepSeek wor
 
 This guide was written from a real run: a team of agents migrated a production Python server
 (`4genthub`) to Go, file by file, while the human watched and steered. Everything here was
-done on one WSL2 machine on 2026-10-01 and the commands were checked there.
+done on one WSL2 machine on 2026-10-01 and the commands were checked there. A second session on
+2026-10-02 added a second team (two pods in one rig), the owner-leads-workers rule and the fixes in
+chapter 12.
 
 ![Overview: LLMs, agents, skill offload, DeepSeek Harness, OpenRig + herdr](demo.jpg)
 
@@ -53,7 +55,7 @@ Follow the chapters in order the first time. Each one ends with a **Check** you 
 
 Ready-to-copy files:
 
-- [templates/](templates/) — `rig.yaml`, `CULTURE.md`, watchdog reminder, DeepSeek prompt, e2e account example, migration ledger
+- [templates/](templates/) — `rig.yaml`, `CULTURE.md`, `TEAM_SPLIT.md`, watchdog reminder, DeepSeek prompt, e2e account example, migration ledger
 - [scripts/](scripts/) — `doctor.sh` (check the machine) and `status.sh` (one-screen status of teams and migration)
 
 ## The five-minute version

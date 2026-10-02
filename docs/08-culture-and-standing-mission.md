@@ -73,12 +73,32 @@ Seats stop at the end of every turn. Combine three things:
 
 When you are done, stop the reminders (`rig watchdog stop <jobId>`) or they keep firing.
 
-## 8.6 One team per code area
+## 8.6 Several teams on one code area
 
-Two teams on the same files will overwrite each other. In the case study three rigs were set up for
-the same migration (a Claude team, an agy team and a generic one). Before launching another, check
-who is running (`rig ps`) and stop the others' reminders. Pause or take down the team you do not
-want editing.
+Two teams on the same files overwrite each other. In the first run three rigs were set up for the
+same migration and had to be stopped. The second run kept two teams (a Claude pair and an `agy` pair)
+in one rig as two pods, and split the work so they cannot collide.
+
+**Split by bounded context, not by slice.** Rows in the same context share types and files, so a
+split by slice makes one team wait on the other. Use the first path segment of the module (for
+example `task_management` for team A, everything else for team B), across all slices. Write it down in
+a file both teams read (see [../templates/TEAM_SPLIT.md](../templates/TEAM_SPLIT.md)):
+
+- ownership table: team, seats, contexts, number of `todo` rows;
+- each team edits only its own rows in the ledger, with a targeted edit after re-reading it;
+- never edit the other team's files; shared files (`go.mod`, helpers) are add-only;
+- checkers check only their own team's rows;
+- the end-to-end test runs once, by one named seat, when both teams have no `todo` rows.
+
+Put the same rules in `CULTURE.md` so a restored rig has them. Running seats read `CULTURE.md` only at
+launch, so also tell them (chapter 8.4) and point them at the shared file.
+
+**Do not copy permissions between culture files.** The old `agy` culture authorized a production
+deploy; that did not carry over to the new combined rig. Authorizations are per rig and per user
+decision: write them again deliberately or leave them out.
+
+**Each owner leads workers.** See chapter 9.0: the owner is the team leader and the DeepSeek jobs are
+its workers; the checker reviews the leader.
 
 ## 8.7 Check
 

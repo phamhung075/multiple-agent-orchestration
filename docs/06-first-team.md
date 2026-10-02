@@ -108,7 +108,49 @@ rig queue list --destination dev-owner@my-team --limit 1000
 on the queue. From your own shell you cannot `rig queue create`, because that needs a seat identity;
 ask a seat to create the item.
 
-## 6.6 Check
+## 6.6 Add a second team (pod) to a running rig
+
+To run two teams on the same job (for example a Claude pair and an `agy` pair), add a pod to the
+running rig instead of starting another rig. Seat names are `<pod>-<member>@<rig>`, so use a new pod
+id; the same id as an existing pod collides.
+
+```yaml
+# agy-pod.yaml  (a pod fragment: the same fields as one entry under `pods:`)
+id: agy
+label: my-team-agy
+members:
+  - id: owner
+    agent_ref: "local:../../../path/to/agents/implementer"
+    runtime: agy
+    profile: default
+    cwd: "/home/me/my-repo"
+  - id: check
+    agent_ref: "local:../../../path/to/agents/qa"
+    runtime: agy
+    profile: default
+    cwd: "/home/me/my-repo"
+edges:
+  - kind: delegates_to
+    from: owner
+    to: check
+```
+
+```bash
+rig expand <rig-id> ./agy-pod.yaml --rig-root ~/.openrig/specs/my-team
+rig ps --nodes --rig my-team           # four seats now
+```
+
+Things to know **(verified 2026-10-02)**:
+
+- The new seats start **fresh**. Live seats cannot be moved between rigs, so "moving" a team means
+  expanding the target rig, then `rig down` and `rig archive` the old one. Take `--snapshot` first.
+- `rig expand` may print `timed out after 5000ms ... outcome is UNKNOWN`. The pod can still have been
+  created: run `rig ps --nodes --rig <rig>` before retrying.
+- The saved `rig.yaml` is **not** updated. Restoring from the spec will not bring the new pod back;
+  add it to the spec too.
+- Two teams on one repo need a split of the work (chapter 8.6) or they will overwrite each other.
+
+## 6.7 Check
 
 - `rig ps --nodes --rig my-team` shows `working` or `idle`, lifecycle `run`.
 - `ps -eo args | grep dangerously-skip-permissions` shows the flag when you chose yolo.

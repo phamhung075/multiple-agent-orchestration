@@ -84,6 +84,9 @@ the migration files, never the user's unrelated uncommitted changes. (Deployment
 | Machine restart killed the tmux server and every tmux seat | Restore with `rig up <rig> --existing`; keep durable state in files |
 | Claude hit its usage limit | A second team on `agy` was created; only one team may edit the same files |
 | Three rigs for one job | Stop the others' reminders; pick one owner for the code area |
+| Day 2: two teams in one rig | Add a pod with `rig expand`; split work by bounded context in `TEAM_SPLIT.md` (chapter 8.6) |
+| Day 2: seats written to use DeepSeek, zero jobs | Delegation must be the leader's default and checked by job count (chapter 9.0, 9.7) |
+| Day 2: every DeepSeek job failed, `Insufficient Balance` | Test the worker with a tiny job before blaming the seats; top up |
 | `rig up <folder>` and `rig up rig.yaml --existing` failed | `rig up` takes a `.yaml`/`.rigbundle`, or a rig **name** with `--existing` |
 | Seat said "No conversation found" on resume | The transcript was gone: `--fresh <seat>` (chapter 12) |
 | A new culture section had no effect | Seats read it only at launch: message them |
