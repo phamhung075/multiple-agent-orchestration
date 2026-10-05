@@ -1,8 +1,18 @@
 # Multiple-Agent Orchestration
 
-A practical, step-by-step guide to running a **team of AI coding agents** on your own machine:
-several Claude Code (and Antigravity `agy`) sessions that work in parallel, hand work to each other
-through a durable queue, and push the bulk of the typing to cheap **DeepSeek workers**.
+A practical, step-by-step guide to running a **team of AI coding agents** on your own machine: a pod
+of seats that work in parallel, hand work to each other through a durable queue, and can be staffed
+with a cheap or an expensive model without renaming anything.
+
+The system has **two halves**. Locally, OpenRig launches and supervises the seats in tmux — that is
+chapters 1–14. In the cloud, a **brain** holds the state for orchestration: rooms, seats, seat types,
+tasks, and the resolved state the client reports — that is chapters 15–16.
+
+The early chapters teach the simplest form that works (a couple of seats, work offloaded to a cheap
+model as a tool call). Chapters 14–16 are what the same system looked like after months of real use:
+liveness monitoring, a seat model with swappable occupants, and the cloud brain that completes it.
+[Chapter 15.9](docs/15-architecture-seat-model-and-cloud.md) lists exactly what changed, so you can
+read the early chapters without being misled by them.
 
 This guide was written from a real run: a team of agents migrated a production Python server
 (`4genthub`) to Go, file by file, while the human watched and steered. Everything here was
@@ -19,26 +29,33 @@ cloud brain (4genthub) that completes the system.
 ## What you will build
 
 ```
-            you (human)
-                │  rig send / rig queue / rig tui
-                ▼
-        ┌──────────────── OpenRig daemon (rig) ────────────────┐
-        │  rigs = teams · seats = agent sessions · queue = work │
-        └───────┬───────────────────────────────┬──────────────┘
-                │ tmux or herdr panes            │ watchdogs (wake-ups)
-        ┌───────▼────────┐              ┌────────▼────────┐
-        │ dev-owner      │  handoff     │ dev-check       │
-        │ (Claude Code)  │─────────────▶│ (Claude Code)   │
-        └───────┬────────┘   review     └─────────────────┘
-                │ dsh-offload start (background jobs)
-        ┌───────▼───────────────────────────┐
-        │ DeepSeek Harness (dsh) workers    │  cheap, parallel drafting
-        └───────────────────────────────────┘
+                you (human)
+                    │  dashboard · rig send · rig queue · rig tui
+    ┌───────────────┴─────────────────────┐
+    │  THE BRAIN (cloud, ch. 15–16)       │  rooms · seats · seat types
+    │  state for orchestration            │  tasks · context · resolved state
+    └───────────────┬─────────────────────┘
+                    │ pull: the client renders the rig and seat files to disk
+    ┌───────────────▼─────────────────────┐
+    │  OpenRig daemon (local, ch. 1–14)   │  rigs = teams · queue = work
+    │  launches and supervises the seats  │  watchdogs · liveness probe (ch. 14)
+    └───────────────┬─────────────────────┘
+                    │ tmux / herdr panes
+    ┌───────────────▼─────────────────────┐
+    │  seats: lead · specialists ·        │  occupant runtimes:
+    │  reviewer, in one pod on one queue  │  claude-code · codex · agy · omp
+    └─────────────────────────────────────┘
+        seats commit locally, never push; the reviewer is the gate
 ```
+
+Start with the local half alone if you like — chapters 1–14 stand on their own. The brain is what
+makes the portfolio outlive one machine and be visible to someone not sitting at a terminal.
 
 ## How to read this guide
 
-Follow the chapters in order the first time. Each one ends with a **Check** you can run.
+Follow the chapters in order the first time. Most end with a **Check** you can run. Chapters 14–16
+are the ones to read even if you skip the rest — they cover what breaks a long-running team, and the
+architecture it converges into.
 
 | # | File | You will learn |
 |---|------|----------------|
@@ -79,12 +96,17 @@ rig send dev-owner@my-team "Do <one bounded task>. Track it on the queue."
 rig ps --nodes --rig my-team         # 5. watch it work
 ```
 
-Then read chapters 8–10 to make the team run for hours without you.
+Then read chapters 8–10 to make the team run for hours without you, [chapter 14](docs/14-keeping-the-fleet-alive.md)
+to keep it alive while you are not looking, and [chapter 16](docs/16-completing-the-system-the-brain.md)
+to add the cloud brain.
 
 ## Honesty notes
 
 - Commands marked **(verified)** were run on the author's machine. Anything marked **(not verified)**
   comes from upstream docs only. When a tool changes, trust `rig --help` over this text.
 - OpenRig 0.6.3 and the DeepSeek Harness (`0.1.7-rc.2`, developer preview) change quickly.
+- The brain in chapter 16 is **4genthub** (<https://www.4genthub.com/>), the cloud half this guide
+  pairs with OpenRig. Its wording is taken from its own landing page, which was rewritten to claim
+  only what ships; the platform is still moving, so trust it over this text.
 - No credentials are stored in this guide. [templates/e2e-account.env.example](templates/e2e-account.env.example)
   shows the shape only.
