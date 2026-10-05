@@ -14,7 +14,8 @@ Every entry below happened during the real run. Format: **symptom → cause → 
 
 ### `Rig … has live sessions. Stop the rig with 'rig down' before restoring` (HTTP 409)
 Restoring needs the rig stopped. Often the daemon believes sessions are alive after a crash.
-→ `rig down <rig> --snapshot`, then `rig up <rig> --existing`.
+→ `rig down <rig> --snapshot`, then `rig up <rig> --existing`. Try the `rig up` on its own first,
+though: after a whole-fleet loss on 2026-10-05 it succeeded directly, with no `rig down`.
 
 ### `local: ref must be a relative path`
 A spec used `agent_ref: "local:/abs/path"`.
@@ -51,6 +52,19 @@ The message sits unsubmitted in the input box. → `tmux send-keys -t '<seat>' E
 A permission prompt or picker is waiting. `rig capture <seat> --lines 30` shows it. Approve plain
 "Yes" for read-only commands you understand. Avoid "don't ask again" unless you mean it. Seats on
 `builtin:yolo` do not show these.
+
+### A seat can read but cannot write, edit or run bash (omp runtime)
+Symptom: `agentActivity` alternates `running (read)` with `needs_input`, reason `permission_prompt`,
+on every `write`/`edit`/`bash`; the seat itself reports it "cannot run git here". It is half working
+and looks busy.
+Cause **(verified 2026-10-05)**: for the `omp` runtime, `rig seat set-permissions` is refused
+("Per-seat permission mode is unsupported for runtime 'omp'"), and a **fresh launch does not apply
+the declared `permission_policy`** — the policy columns stay NULL and are load-bearing. Relaunching
+the seat, even owner-authorized, does **not** fix it: every tool call was still denied by the
+operator-approval path afterwards.
+→ Do not burn a relaunch on it. Check the columns on the seat record, treat the NULLs as the cause,
+and either grant at a layer the runtime honours or move that seat's writable rows to a seat that can
+write. The seat's own report is honest — believe it over the `running` state.
 
 ### `No conversation found with session ID …` after a restore
 The Claude transcript for that session no longer exists, so `claude --resume` fails and the seat sits
@@ -90,9 +104,28 @@ It reads `CULTURE.md` only at launch. → Message it (chapter 8). Verify with
 ### Every tmux seat died at once
 The tmux server stopped. `tmux ls` says `no server running`; `rig ps` can still claim `run` for
 minutes (stale). Seats in **herdr** are unaffected.
-→ `rig down <rig>` then `rig up <rig> --existing` for each rig. Cause was not identified in the
-case study. Checked and ruled out: the Linux OOM killer (it killed Firefox processes, not tmux) and
-OpenRig's own tests (they use isolated sockets).
+→ `rig up <rig> --existing`. On 2026-10-05 this reported `fully_restored` with all ten seats
+`resumed` on their own session files, with **no `rig down` first**; reach for
+`rig down <rig> --snapshot` only if you get the HTTP 409 refusal above.
+
+**Mechanism (verified 2026-10-05).** Every seat's exit record read `{"reason":"sighup","kind":"signal"}`
+and eight of them landed inside a 215 ms window: the **server** went first, each pane's pty master
+closed, and the kernel hung up the pane's process group. `exit-empty on` then exited the already
+emptied server cleanly, which is why the socket was left stale. The tidy exit is the epilogue, not
+the cause.
+
+**Cause still unattributed.** The leading candidate is an unlogged signal to the server process.
+Ruled out, with reasons worth reusing: the **daemon** (`session.stopped` has exactly one writer and a
+deliberate close does log it — a seat stopped 53 s earlier proved the row exists); **OpenRig's tests**
+(every `kill-server` in the tree passes a private socket `-S`; production code only uses
+`kill-session -t <name>`); the **OOM killer** (it killed other processes at other times, and there is
+no kernel event at the death second).
+
+**Reasoning trap.** A missing `dmesg` line does **not** mean "no kill": `SIGTERM`, `SIGKILL` and
+`SIGHUP` to a user process leave no kernel record at all. Absence of evidence is only evidence when
+the mechanism would necessarily have left a trace. See [chapter 14](14-keeping-the-fleet-alive.md)
+for the probe that catches this in 60 s instead of 2 m 16 s, and `~/.openrig/openrig.sqlite`'s
+`events` table (UTC) for the authoritative timeline.
 
 ### `rig terminal open` says `tmux session … is not alive`
 Same as above for tmux seats. Restore them.
@@ -143,11 +176,18 @@ the area. Check `git status` and the ledger.
 rig daemon start || true          # is the daemon up?
 rig ps                            # what does OpenRig think?
 tmux ls ; pgrep -a herdr          # what is really alive?
+scripts/rig-watchdog.sh --check   # expectation vs reality, one line per rig
 rig ps --nodes --rig <rig>        # activity and reason per seat
 rig capture <seat> --lines 40     # what is on screen?
 tail -30 ~/.openrig/daemon.log    # what did the daemon say?
-dmesg | grep -i oom | tail        # was it memory?
+dmesg | grep -i oom | tail        # was it memory?  (a CLEAN dmesg does not rule out
+                                  #  a signal — SIGTERM/SIGHUP leave no kernel record)
 ```
+
+Ask the two questions in order, and never let one answer for the other: **what does the daemon
+believe** (`rig ps`, its cache) versus **what is actually alive** (`tmux ls`, the ground truth). When
+they disagree, the ground truth wins and every other tool will mislead you in the same direction
+(chapter 14.1).
 
 `rig context get help` prints the help guide for your installed version.
 

@@ -78,4 +78,26 @@ node .agents/skills/deepseek-offload/scripts/dsh-offload.mjs cancel <jobId>
 - Audit claims with evidence: transcripts (`~/.claude/projects/…`), `dsh-offload.mjs list`,
   `rig ps`, not with what a seat says about itself.
 
-You have finished the guide. Return to the [README](../README.md) for the index.
+## 13.8 Blast radius the orchestrator itself introduces
+
+The checklist in 13.2 is about what a *seat* can reach. There is a second, quieter radius: what one
+*component* can take down.
+
+**Every rig on the machine shares one tmux server.** OpenRig's daemon passes no `-S`/`-L` socket
+selector on any of its tmux calls, so all teams ride the default socket. One event that empties that
+server ends every seat of every rig at once — the failure is not scoped to the team that caused it,
+and on 2026-10-05 it cost ten seats in a single second (chapter 14).
+
+Plan for it as shared fate:
+
+- Run **different projects on different machines**, or accept that one bad night stops all of them.
+- Seats under **herdr** are unaffected by a tmux server death (chapter 12) — worth knowing when you
+  choose where a long-running team lives.
+- Watch liveness per rig, not per project ([../scripts/rig-watchdog.sh](../scripts/rig-watchdog.sh)).
+- Assume nothing you cannot rebuild: the recovery cost is elapsed time, and only because a seat's
+  position (rig spec) and conversation (session file) both live on disk (chapter 14.7).
+
+The same instinct applies to the daemon and to any shared resource you introduce — one queue, one
+database, one socket per machine is a convenience that silently makes every failure total.
+
+Next: [chapter 14 — keeping the fleet alive](14-keeping-the-fleet-alive.md).

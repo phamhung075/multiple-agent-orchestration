@@ -67,6 +67,9 @@ matches your installed CLI.
 | Standing mission in `CULTURE.md`, compaction rule, offload rules | Written by the author during the case study (chapters 8–10) |
 | Wave-based DeepSeek porting (`w5-*`, `w6-*`) | Observed in the owner seat's transcript and `dsh-offload.mjs list` |
 | Troubleshooting entries | Each one was hit during the run (chapter 12) |
+| Chapter 14: liveness probe, server-identity heartbeat, crash forensics | Diagnosed 2026-10-05 from `~/.openrig/openrig.sqlite`'s `events` table, the seats' session files and `dmesg`; `scripts/rig-watchdog.sh` verified locally (self-test, a live healthy fleet, and stopped/unknown rigs) |
+| The omp "read-only seat" entry in chapter 12 | Measured 2026-10-05 on a relaunched `omp` seat: every `write`/`edit`/`bash` denied by the operator-approval path |
+| Chapter 15: position vs occupant, rooms/seats/seat types, the cloud/client split | Read live from a cloud service's seat listing — where the seat **key** and the seat **type** are separate fields, so two seats can share one type — and from a backend that stores seat types as per-user records with their own versions. Described generically in the chapter; the specific endpoints are not reproducible from this guide |
 
 ## Not verified
 
@@ -75,3 +78,9 @@ matches your installed CLI.
 - Behavior of `rig send --raw … --wait-for-idle` as a self-compact trigger: written and sent to the
   seats, but not observed end to end.
 - Auto permission mode (`rig seat set-permissions --mode auto`): requested, result not read back.
+- Giving each rig its own tmux socket (`-S`/`-L`) so a server event costs one rig (chapters 13.8 and
+  14.6): proposed from reading OpenRig's tmux adapter, **not implemented or tested here**. As of
+  0.6.4 every rig shares the default socket.
+- The **trigger** of the 2026-10-05 fleet loss: the mechanism is verified (the server went first; the
+  panes took `SIGHUP` inside a 215 ms window), the trigger is still unattributed. Do not read chapter
+  14 as a closed case.

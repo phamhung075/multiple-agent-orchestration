@@ -1,0 +1,125 @@
+# Ten-seat pod on one cheap runtime: a lead, a reviewer, and eight specialists.
+# This is the shape a real ten-seat production pod ran, reduced to a copyable template.
+# Copy into ~/.openrig/specs/<team>/ together with an agents/<seat>/ directory per member.
+# Validate:  rig spec validate rig.yaml && rig spec preflight rig.yaml
+# Launch:    rig up ./rig.yaml
+#
+# Read docs/15 before editing: a seat is a POSITION (this file) plus an OCCUPANT (runtime + model).
+# The behaviour is not here — it is in agents/<seat>/agent.yaml and agents/<seat>/guidance/role.md,
+# which must be written for the runtime you pick. A Claude-flavoured role on an omp seat misroutes.
+#
+# The member ids below are SEAT KEYS, and they are yours to choose: `go-dev`, `web-dev` and
+# `skills-dev` are not roles from any fixed list, they are project-specific names. In the cloud each
+# key points at a reusable SEAT TYPE (`developer`, `architect`, ...), which is a per-user record you
+# can create, version and pin. Name seats after the work, not after a taxonomy.
+version: "0.2"
+name: my-team                      # EDIT: rig name; seats become lead@my-team, go-dev@my-team, ...
+summary: >
+  A lead that delegates, eight specialists, one independent reviewer. All seats on one runtime.
+
+pods:
+  - id: my-team
+    label: My project
+    members:
+      - id: lead
+        # EDIT: path RELATIVE to this file. Absolute "local:" refs are rejected by the schema.
+        agent_ref: local:agents/lead
+        profile: default
+        runtime: omp                       # or: claude-code, agy, codex
+        model: deepseek/deepseek-flash
+        cwd: .                             # EDIT: the repository the seats work in
+        permission_policy: builtin:yolo    # read docs/13.2 before keeping this
+      - id: go-dev
+        agent_ref: local:agents/go-dev
+        profile: default
+        runtime: omp
+        model: deepseek/deepseek-flash
+        cwd: .
+        permission_policy: builtin:yolo
+      - id: reviewer                         # the gate: "done" means a second seat verified it
+        agent_ref: local:agents/reviewer
+        profile: default
+        runtime: omp
+        model: deepseek/deepseek-flash
+        cwd: .
+        permission_policy: builtin:yolo
+      - id: fe-dev
+        agent_ref: local:agents/fe-dev
+        profile: default
+        runtime: omp
+        model: deepseek/deepseek-flash
+        cwd: .
+        permission_policy: builtin:yolo
+      - id: web-dev
+        agent_ref: local:agents/web-dev
+        profile: default
+        runtime: omp
+        model: deepseek/deepseek-flash
+        cwd: .
+        permission_policy: builtin:yolo
+      - id: writer
+        agent_ref: local:agents/writer
+        profile: default
+        runtime: omp
+        model: deepseek/deepseek-flash
+        cwd: .
+        permission_policy: builtin:yolo
+      - id: go-dev2
+        agent_ref: local:agents/go-dev2
+        profile: default
+        runtime: omp
+        model: deepseek/deepseek-flash
+        cwd: .
+        permission_policy: builtin:yolo
+      - id: skills-dev
+        agent_ref: local:agents/skills-dev
+        profile: default
+        runtime: omp
+        model: deepseek/deepseek-flash
+        cwd: .
+        permission_policy: builtin:yolo
+      - id: context-dev
+        agent_ref: local:agents/context-dev
+        profile: default
+        runtime: omp
+        model: deepseek/deepseek-flash
+        cwd: .
+        permission_policy: builtin:yolo
+      - id: feedback-dev
+        agent_ref: local:agents/feedback-dev
+        profile: default
+        runtime: omp
+        model: deepseek/deepseek-flash
+        cwd: .
+        permission_policy: builtin:yolo
+    # Edges are the topology. Coordination lives here, not in prompts: the lead delegates,
+    # specialists collaborate with their peers, and everything escalates back to the lead.
+    edges:
+      - {kind: delegates_to, from: lead, to: go-dev}
+      - {kind: delegates_to, from: lead, to: reviewer}
+      - {kind: delegates_to, from: lead, to: fe-dev}
+      - {kind: delegates_to, from: lead, to: web-dev}
+      - {kind: delegates_to, from: lead, to: writer}
+      - {kind: delegates_to, from: lead, to: go-dev2}
+      - {kind: delegates_to, from: lead, to: skills-dev}
+      - {kind: delegates_to, from: lead, to: context-dev}
+      - {kind: delegates_to, from: lead, to: feedback-dev}
+      - {kind: collaborates_with, from: go-dev, to: reviewer}
+      - {kind: collaborates_with, from: go-dev, to: fe-dev}
+      - {kind: collaborates_with, from: web-dev, to: fe-dev}
+      - {kind: collaborates_with, from: writer, to: reviewer}
+      - {kind: collaborates_with, from: go-dev2, to: go-dev}
+      - {kind: collaborates_with, from: skills-dev, to: go-dev}
+      - {kind: collaborates_with, from: context-dev, to: go-dev}
+      - {kind: collaborates_with, from: feedback-dev, to: web-dev}
+      - {kind: escalates_to, from: go-dev, to: lead}
+      - {kind: escalates_to, from: reviewer, to: lead}
+      - {kind: escalates_to, from: fe-dev, to: lead}
+      - {kind: escalates_to, from: web-dev, to: lead}
+      - {kind: escalates_to, from: writer, to: lead}
+      - {kind: escalates_to, from: go-dev2, to: lead}
+      - {kind: escalates_to, from: skills-dev, to: lead}
+      - {kind: escalates_to, from: context-dev, to: lead}
+      - {kind: escalates_to, from: feedback-dev, to: lead}
+
+edges: []

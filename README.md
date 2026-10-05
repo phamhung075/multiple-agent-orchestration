@@ -8,7 +8,10 @@ This guide was written from a real run: a team of agents migrated a production P
 (`4genthub`) to Go, file by file, while the human watched and steered. Everything here was
 done on one WSL2 machine on 2026-10-01 and the commands were checked there. A second session on
 2026-10-02 added a second team (two pods in one rig), the owner-leads-workers rule and the fixes in
-chapter 12.
+chapter 12. A third session on 2026-10-05 added **chapter 14** and rewrote the fleet-loss entry in
+chapter 12, after a whole-fleet tmux crash was diagnosed on the same machine, and **chapter 15**,
+which records the architecture the project converged into — the seat model (position vs occupant,
+seat types you own) and the cloud/client split.
 
 ![Overview: LLMs, agents, skill offload, DeepSeek Harness, OpenRig + herdr](demo.jpg)
 
@@ -51,12 +54,16 @@ Follow the chapters in order the first time. Each one ends with a **Check** you 
 | 11 | [docs/11-case-study-python-to-go.md](docs/11-case-study-python-to-go.md) | The real migration, step by step |
 | 12 | [docs/12-troubleshooting.md](docs/12-troubleshooting.md) | Every problem we actually hit, with the fix |
 | 13 | [docs/13-safety-and-security.md](docs/13-safety-and-security.md) | Permissions, secrets, blast radius |
+| 14 | [docs/14-keeping-the-fleet-alive.md](docs/14-keeping-the-fleet-alive.md) | Liveness vs activity: notice a dead fleet, heartbeat the watchdog, recover in a minute |
+| 15 | [docs/15-architecture-seat-model-and-cloud.md](docs/15-architecture-seat-model-and-cloud.md) | Where this converges: position vs occupant, seat types you own, and the cloud/client split |
 | – | [SOURCES.md](SOURCES.md) | Every source, repo, package and path this guide relies on |
 
 Ready-to-copy files:
 
-- [templates/](templates/) — `rig.yaml`, `CULTURE.md`, `TEAM_SPLIT.md`, watchdog reminder, DeepSeek prompt, e2e account example, migration ledger
-- [scripts/](scripts/) — `doctor.sh` (check the machine) and `status.sh` (one-screen status of teams and migration)
+- [templates/](templates/) — `rig.yaml` (two seats), `rig-omp-10-seats.yaml` (a real ten-seat pod),
+  `CULTURE.md`, `TEAM_SPLIT.md`, watchdog reminder, DeepSeek prompt, e2e account example, migration ledger
+- [scripts/](scripts/) — `doctor.sh` (check the machine), `status.sh` (one-screen status of teams and
+  migration) and `rig-watchdog.sh` (catch and restore a rig whose seats have vanished)
 
 ## The five-minute version
 
