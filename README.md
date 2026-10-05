@@ -11,7 +11,8 @@ done on one WSL2 machine on 2026-10-01 and the commands were checked there. A se
 chapter 12. A third session on 2026-10-05 added **chapter 14** and rewrote the fleet-loss entry in
 chapter 12, after a whole-fleet tmux crash was diagnosed on the same machine, and **chapter 15**,
 which records the architecture the project converged into — the seat model (position vs occupant,
-seat types you own) and the cloud/client split.
+seat types you own) and the cloud/client split — plus **chapter 16**, the runbook for adding the
+cloud brain (4genthub) that completes the system.
 
 ![Overview: LLMs, agents, skill offload, DeepSeek Harness, OpenRig + herdr](demo.jpg)
 
@@ -56,6 +57,7 @@ Follow the chapters in order the first time. Each one ends with a **Check** you 
 | 13 | [docs/13-safety-and-security.md](docs/13-safety-and-security.md) | Permissions, secrets, blast radius |
 | 14 | [docs/14-keeping-the-fleet-alive.md](docs/14-keeping-the-fleet-alive.md) | Liveness vs activity: notice a dead fleet, heartbeat the watchdog, recover in a minute |
 | 15 | [docs/15-architecture-seat-model-and-cloud.md](docs/15-architecture-seat-model-and-cloud.md) | Where this converges: position vs occupant, seat types you own, and the cloud/client split |
+| 16 | [docs/16-completing-the-system-the-brain.md](docs/16-completing-the-system-the-brain.md) | Runbook: add the cloud brain (4genthub) to complete the system |
 | – | [SOURCES.md](SOURCES.md) | Every source, repo, package and path this guide relies on |
 
 Ready-to-copy files:

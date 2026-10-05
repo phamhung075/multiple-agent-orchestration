@@ -70,6 +70,7 @@ matches your installed CLI.
 | Chapter 14: liveness probe, server-identity heartbeat, crash forensics | Diagnosed 2026-10-05 from `~/.openrig/openrig.sqlite`'s `events` table, the seats' session files and `dmesg`; `scripts/rig-watchdog.sh` verified locally (self-test, a live healthy fleet, and stopped/unknown rigs) |
 | The omp "read-only seat" entry in chapter 12 | Measured 2026-10-05 on a relaunched `omp` seat: every `write`/`edit`/`bash` denied by the operator-approval path |
 | Chapter 15: position vs occupant, rooms/seats/seat types, the cloud/client split | Read live from a cloud service's seat listing — where the seat **key** and the seat **type** are separate fields, so two seats can share one type — and from a backend that stores seat types as per-user records with their own versions. Described generically in the chapter; the specific endpoints are not reproducible from this guide |
+| Chapter 16: the brain (rooms, seats, modules, overlays, the four-step flow) | **4genthub** (https://www.4genthub.com/), the cloud half this guide pairs with OpenRig. Feature and flow wording is taken from the project's own landing page (`agenthub-frontend/src/pages/LandingPage.tsx`), which was rewritten to claim only what ships. The runbook's checks and the rotation caveat come from chapters 14–15 of this guide |
 
 ## Not verified
 

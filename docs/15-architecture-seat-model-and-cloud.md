@@ -172,4 +172,4 @@ Read these as corrections, not footnotes:
 - Whether an occupant swap preserves an in-flight turn. It is usually documented as switching runtime
   and model; assume it wants a turn boundary until you have measured it.
 
-You have finished the guide. Return to the [README](../README.md) for the index.
+Next: [chapter 16 — completing the system](16-completing-the-system-the-brain.md).
