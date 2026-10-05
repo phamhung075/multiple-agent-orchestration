@@ -16,6 +16,38 @@ All commands were used in the real run. `<seat>` means `member@rig`, for example
 | A seat's identity (from outside) | `rig whoami --session <seat> --json` |
 | Config | `rig config`, `rig config --with-source`, `rig config get <key>` |
 | Daemon log | `tail -f ~/.openrig/daemon.log` |
+| Is the fleet actually **alive**? | `scripts/rig-watchdog.sh --check` — asks tmux, not the daemon ([chapter 14](14-keeping-the-fleet-alive.md)) |
+
+## Open herdr and the GUIs
+
+| Goal | Command |
+|---|---|
+| Open herdr (launch or attach to the persistent session) | `herdr` |
+| herdr server and client status | `herdr status` |
+| A named herdr session | `herdr --session <name>` |
+| Seats as herdr tiles | `rig terminal status` → `rig terminal views` → `rig terminal open <view>` (run from inside herdr or any terminal) |
+| Stop the herdr server (closes its panes) | `herdr server stop` |
+| OpenRig web GUI | `rig ui open` (opens the default browser; needs the daemon, port 7433 by default: `rig daemon status`) |
+| OpenRig terminal dashboard | `rig tui` |
+| DeepSeek Harness web GUI | `npx @deepseek-ai/dsh web` → http://127.0.0.1:3080 |
+| The brain's dashboard — rooms, seats, resolved state, drift | https://www.4genthub.com/ ([chapter 16](16-completing-the-system-the-brain.md)) |
+
+The OpenRig web UI is served by the daemon on its port and is **off by default**: opening
+`http://127.0.0.1:7433` returns "The OpenRig web UI is off". Turn it on once:
+
+```bash
+rig config set ui.enabled true
+rig daemon stop && rig daemon start
+rig ui open
+```
+
+herdr and the daemon are separate processes; `rig daemon status` shows whether the daemon is up.
+On WSL, if no browser window opens, browse to `http://127.0.0.1:7433` from Windows. See [chapter 5](05-terminals-and-runtimes.md)
+for herdr and [chapter 4](04-install-deepseek.md) for the DeepSeek GUI.
+
+The brain's dashboard is the only view here that shows **drift** — where a seat's resolved state
+differs from what it was configured to be. A seat can be running locally and still be drifted, so
+this is the one thing the local tools cannot tell you ([chapter 16.3](16-completing-the-system-the-brain.md)).
 
 ## Talk and give work
 
@@ -49,7 +81,10 @@ All commands were used in the real run. `<seat>` means `member@rig`, for example
 | Restore everything that was running | `rig start --last` (or `--all` for every restorable snapshot) |
 | Hide a rig, keep all data | `rig archive <rigId>` / `rig unarchive <rigId>` / `rig ps --include-archived` |
 
-Restoring a rig that still has live sessions fails with HTTP 409. Run `rig down <rig>` first.
+Restoring a rig that still has live sessions can fail with HTTP 409, and the daemon often believes
+sessions are alive when they are not. Try `rig up <rig> --existing` first — after a whole-fleet loss
+it has succeeded directly — and fall back to `rig down <rig> --snapshot` if it refuses
+([chapter 12](12-troubleshooting.md)).
 
 ## Wake-ups (watchdogs)
 
@@ -84,6 +119,11 @@ node $R update <jobId> "extra instruction"
 node $R cancel <jobId>
 node .agents/skills/deepseek-offload/scripts/session-tail.mjs <jobId> --watch
 ```
+
+> A cheap model can also be staffed as a **seat** — an occupant of a position, with its own role file
+> — instead of being called as a tool. It then holds context, takes a queue item, and can be reviewed
+> like any other seat. [Chapter 15.9](15-architecture-seat-model-and-cloud.md) explains when that
+> replaced this pattern and why.
 
 ## Where to find evidence
 
