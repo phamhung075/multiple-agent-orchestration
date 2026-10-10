@@ -1,10 +1,10 @@
-# 19. An A/B room: choosing seat instructions by quality per cost
+# 21. An A/B room: choosing seat instructions by quality per cost
 
 You will be tempted to improve every seat's instructions at once: "answer tersely", "verify before
 you stop", a different house style. Do not roll a change out to the whole fleet on a hunch. Run it
 as an experiment in a **second room, beside** the one doing real work, and measure quality per cost.
 
-## 19.1 The design
+## 21.1 The design
 
 One room, one lead, and one worker seat per **arm**. Every worker uses the same seat type, the same
 model, the same base guide and the same policy. The arms differ by **exactly one extra instruction
@@ -27,14 +27,14 @@ terse   : [base guide, policy, terse module]
 verify  : [base guide, policy, verify module]
 ```
 
-## 19.2 Keep it isolated from the production room
+## 21.2 Keep it isolated from the production room
 
 Both rooms must run at the same time, and the experiment must not change the production room.
 
 - **Give the experiment its own module names.** If the experiment re-uses the production modules'
   names, applying it re-publishes them. Copy them under a prefix (`ab-guide`, `ab-policy`) so the
   apply touches nothing the production seats read.
-- **Own rig, own state directories, own supervisor** (chapter 17), own working directory.
+- **Own rig, own state directories, own supervisor** (chapter 13), own working directory.
 - **Do not stop, restart or re-seat anything in the production room.** Verify afterwards that its
   node count and state are what they were.
 - **Shared resources are the real risk.** Name them before launching: the terminal multiplexer
@@ -42,7 +42,7 @@ Both rooms must run at the same time, and the experiment must not change the pro
   rooms down, and two rooms committing into one working tree collide. Give the experiment a
   read-only task set, or its own checkout.
 
-## 19.3 The measurement
+## 21.3 The measurement
 
 Give every arm the **same fixed task set**, small and bounded, with a check you can run without
 judgement (a test that passes, a file that matches). Record per task and per arm:
@@ -67,7 +67,7 @@ Two cautions from practice:
   Prefer a plain-writing rule (answer first, then the reason, then the next step; literal wording)
   over a persona.
 
-## 19.4 Reading the result
+## 21.4 Reading the result
 
 - If an arm matches the control's pass rate at lower cost, it is a candidate default.
 - If it costs less and passes less, it is a trade-off for low-stakes seats only.
@@ -78,10 +78,10 @@ Adopt a winner **per seat type**, not per fleet: a reviewer and a worker can wan
 Roll it out the way you roll out any guide change: change the module, record the new digest in the
 lock file, re-seat, and watch one seat before the rest.
 
-## 19.5 Check
+## 21.5 Check
 
 - Both rooms are listed as running at the same time, with their original seat counts.
 - The experiment's module names appear nowhere in the production room's overlays.
 - Every arm ran the same tasks the same number of times, and the raw rows are saved.
 
-Next: [chapter 20 — working agreements for several seats in one repository](20-working-agreements-shared-repo.md).
+Next: [chapter 22 — case study: Python to Go](22-case-study-python-to-go.md).

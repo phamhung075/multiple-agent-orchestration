@@ -6,11 +6,11 @@ chk()  { # name, command-to-run-for-version
   if command -v "$1" >/dev/null 2>&1; then ok "$1" "$(eval "$2" 2>&1 | head -1)"; else miss "$1" "$3"; fi; }
 MISSING=0
 echo "Tools"
-chk node   'node -v'                 "install Node 22 or 24 (docs/02)"
+chk node   'node -v'                 "install Node 22 or 24 (docs/03)"
 chk npm    'npm -v'                  "comes with Node"
 chk tmux   'tmux -V'                 "sudo apt install tmux"
 chk git    'git --version'           "sudo apt install git"
-chk rig    'rig --version'           "npm install -g @openrig/cli (docs/03)"
+chk rig    'rig --version'           "npm install -g @openrig/cli (docs/04)"
 chk claude 'claude --version'        "npm install -g @anthropic-ai/claude-code"
 chk herdr  'herdr --version'         "optional terminal provider (docs/05)"
 chk agy    'agy --version'           "optional second runtime (docs/05)"
@@ -26,8 +26,8 @@ fi
 echo "Runtimes"
 command -v claude >/dev/null && { claude auth status >/dev/null 2>&1 && ok claude-auth "logged in" || miss claude-auth "run: claude auth login"; }
 echo "DeepSeek"
-[ -n "${DEEPSEEK_API_KEY:-}" ] && ok DEEPSEEK_KEY "set (value hidden)" || echo "  note     DEEPSEEK_KEY   not in this shell env; the Harness may hold it in its own config (docs/04). Confirm with dsh-offload.mjs doctor"
-ls -d "${DSH_HOME:-$HOME/.dsh}" >/dev/null 2>&1 && ok DSH_HOME "${DSH_HOME:-$HOME/.dsh}" || miss DSH_HOME "start the Harness once (docs/04)"
+[ -n "${DEEPSEEK_API_KEY:-}" ] && ok DEEPSEEK_KEY "set (value hidden)" || echo "  note     DEEPSEEK_KEY   not in this shell env; the Harness may hold it in its own config (docs/06). Confirm with dsh-offload.mjs doctor"
+ls -d "${DSH_HOME:-$HOME/.dsh}" >/dev/null 2>&1 && ok DSH_HOME "${DSH_HOME:-$HOME/.dsh}" || miss DSH_HOME "start the Harness once (docs/06)"
 curl -s -o /dev/null -m 3 -w '%{http_code}' "${DSH_GUI_URL:-http://127.0.0.1:3080}/" | grep -q '^[1-5]' && ok dsh-gui "answers on ${DSH_GUI_URL:-http://127.0.0.1:3080}" || echo "  note     dsh-gui        not running (jobs still work; start with: pnpm dsh web)"
 echo
 [ "$MISSING" = 0 ] && echo "All required checks passed." || echo "Fix the MISSING lines that apply to you."

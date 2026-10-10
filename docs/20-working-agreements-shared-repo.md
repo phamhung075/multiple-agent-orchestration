@@ -74,3 +74,5 @@ digest) that a drive-by edit will not take, and a changed guide is always a revi
 - The changelog gained one new file per change and no existing file was edited.
 
 Back to the [README](../README.md).
+
+Next: [chapter 21 — an A/B room for seat instructions](21-ab-room-for-guide-variants.md).

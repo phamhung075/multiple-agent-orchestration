@@ -10,7 +10,7 @@ questions.
 - Attach: `tmux attach -t dev-owner@4genthub-go`. Detach: `Ctrl-b` then `d`.
 - List: `tmux ls`.
 - All seats share **one tmux server**. If that server dies, every tmux seat dies with it
-  (chapter 12). Seats in herdr are not affected.
+  (chapter 23). Seats in herdr are not affected.
 
 ## 5.2 herdr
 
@@ -73,6 +73,6 @@ tmux attach -t <seat>@<rig>             # watch live (tmux seats)
 rig tui --shared                        # shared dashboard
 ```
 
-Never poll `rig capture` in a loop. Use queue handoffs and watchdogs (chapter 10).
+Never poll `rig capture` in a loop. Use queue handoffs and watchdogs (chapter 12).
 
-Next: [chapter 6 — your first team](06-first-team.md).
+Next: [chapter 6 — install the DeepSeek workers](06-install-deepseek.md).

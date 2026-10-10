@@ -28,7 +28,7 @@ pods:
         runtime: omp                       # or: claude-code, agy, codex
         model: deepseek/deepseek-flash
         cwd: .                             # EDIT: the repository the seats work in
-        permission_policy: builtin:yolo    # read docs/13.2 before keeping this
+        permission_policy: builtin:yolo    # read docs/09.2 before keeping this
       - id: go-dev
         agent_ref: local:agents/go-dev
         profile: default

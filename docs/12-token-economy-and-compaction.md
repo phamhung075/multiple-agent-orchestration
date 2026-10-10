@@ -1,9 +1,9 @@
-# 10. Token economy and compaction
+# 12. Token economy and compaction
 
 Long jobs burn tokens in three ways: a bloated context, idle loops, and using the top model for
 mechanical work. This chapter covers all three.
 
-## 10.1 Spend less
+## 12.1 Spend less
 
 | Lever | How | Chapter |
 |---|---|---|
@@ -15,9 +15,9 @@ mechanical work. This chapter covers all three.
 | One team per area | Two teams re-doing the same work double the cost | 8 |
 
 When a provider limit is hit, a seat stops. The team resumes when the limit resets if reminders are
-registered (chapter 8), and your ledger tells it where to continue.
+registered (chapter 10), and your ledger tells it where to continue.
 
-## 10.2 Compact your own context after each task
+## 12.2 Compact your own context after each task
 
 Claude Code's `/compact` summarizes the conversation. A seat cannot act inside its own finished turn,
 so it schedules the command to arrive **after** the turn ends.
@@ -56,7 +56,7 @@ rig config get policies.claude_compaction.threshold_percent   # 80
 Enabling it makes OpenRig drive compaction by context size for **all** Claude seats. Read the
 skill first: `rig context get skills/claude-compaction-restore`.
 
-## 10.3 After a compaction or restart: restore from files
+## 12.3 After a compaction or restart: restore from files
 
 The skill `claude-compaction-restore` has two protocols: "If You Are About To Compact" (write the
 restore map) and "If You Just Compacted" (rebuild the working model). The minimum:
@@ -67,7 +67,7 @@ rig whoami --json                    # who am I
 rig queue list --owned --limit 1000  # what is owed to me
 ```
 
-## 10.4 Reminders that do not waste tokens
+## 12.4 Reminders that do not waste tokens
 
 A reminder every 10 minutes costs one short prompt per seat. Use a message that points to the
 ledger, not a long instruction:
@@ -81,9 +81,9 @@ message: "Keep going on the mission in CULTURE.md: re-read MIGRATION.md, and if 
 
 Stop them when the job is finished: `rig watchdog stop <jobId>`.
 
-## 10.5 Check
+## 12.5 Check
 
 - `grep -c '/compact' ~/.claude/projects/<project>/<session>.jsonl` shows compactions after tasks.
 - `rig watchdog list` shows only the reminders you want.
 
-Next: [chapter 11 — the real case study](11-case-study-python-to-go.md).
+Next: [chapter 13 — the compaction supervisor](13-self-compaction-supervisor.md).

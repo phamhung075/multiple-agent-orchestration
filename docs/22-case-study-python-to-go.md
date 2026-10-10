@@ -1,4 +1,4 @@
-# 11. Case study: migrating a Python server to Go
+# 22. Case study: migrating a Python server to Go
 
 What actually happened, in order, so you can repeat the pattern on your own project.
 
@@ -49,16 +49,16 @@ Progress is one command: `grep -c '| todo |' MIGRATION.md`.
 Problem: both seats stopped at the end of their turns; the owner waited on the checker and the
 checker was idle.
 
-Fixes (chapter 8): a **standing mission** with a stop condition in `CULTURE.md`, "owner never waits
+Fixes (chapter 10): a **standing mission** with a stop condition in `CULTURE.md`, "owner never waits
 for the checker", and two periodic reminders every 600 s.
 
 ## Step 5 — Put DeepSeek to work
 
 The offload section was added to `CULTURE.md` and sent to both seats. The owner started waves
-(`w5-20 … w5-34`, then `w6-01 …`) from one shared prompt (chapter 9), reviewed each job's diff and ran
+(`w5-20 … w5-34`, then `w6-01 …`) from one shared prompt (chapter 11), reviewed each job's diff and ran
 `go build/vet/test`, then marked rows `done`. The checker reviewed slices on the queue.
 
-Audit evidence we used to verify behavior (chapter 7):
+Audit evidence we used to verify behavior (chapter 8):
 
 ```bash
 node .agents/skills/deepseek-offload/scripts/dsh-offload.mjs list
@@ -84,21 +84,21 @@ the migration files, never the user's unrelated uncommitted changes. (Deployment
 | Machine restart killed the tmux server and every tmux seat | Restore with `rig up <rig> --existing`; keep durable state in files |
 | Claude hit its usage limit | A second team on `agy` was created; only one team may edit the same files |
 | Three rigs for one job | Stop the others' reminders; pick one owner for the code area |
-| Day 2: two teams in one rig | Add a pod with `rig expand`; split work by bounded context in `TEAM_SPLIT.md` (chapter 8.6) |
-| Day 2: seats written to use DeepSeek, zero jobs | Delegation must be the leader's default and checked by job count (chapter 9.0, 9.7) |
+| Day 2: two teams in one rig | Add a pod with `rig expand`; split work by bounded context in `TEAM_SPLIT.md` (chapter 10.6) |
+| Day 2: seats written to use DeepSeek, zero jobs | Delegation must be the leader's default and checked by job count (chapters 11.0 and 11.7) |
 | Day 2: every DeepSeek job failed, `Insufficient Balance` | Test the worker with a tiny job before blaming the seats; top up |
 | `rig up <folder>` and `rig up rig.yaml --existing` failed | `rig up` takes a `.yaml`/`.rigbundle`, or a rig **name** with `--existing` |
-| Seat said "No conversation found" on resume | The transcript was gone: `--fresh <seat>` (chapter 12) |
+| Seat said "No conversation found" on resume | The transcript was gone: `--fresh <seat>` (chapter 23) |
 | A new culture section had no effect | Seats read it only at launch: message them |
 
 ## Reproduce on your project
 
-1. Chapters 3–4: install.
-2. Chapter 6: spec with owner + checker.
+1. Chapters 3–6: install.
+2. Chapter 7: spec with owner + checker.
 3. Ask the owner to build a **ledger** for your job.
-4. Chapter 8: mission, stop condition, reminders.
-5. Chapter 9: offload waves with the review gate.
-6. Chapter 10: compaction rule.
+4. Chapter 10: mission, stop condition, reminders.
+5. Chapter 11: offload waves with the review gate.
+6. Chapter 12: compaction rule.
 7. Test, then merge when the ledger is clean.
 
-Next: [chapter 12 — troubleshooting](12-troubleshooting.md).
+Next: [chapter 23 — troubleshooting](23-troubleshooting.md).

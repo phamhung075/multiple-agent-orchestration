@@ -1,9 +1,9 @@
-# 8. Culture and the standing mission
+# 10. Culture and the standing mission
 
 A team that works for hours needs one place that says **what the job is** and **how to behave**.
 That place is the culture file.
 
-## 8.1 What `CULTURE.md` is
+## 10.1 What `CULTURE.md` is
 
 - A markdown file referenced from the spec (`culture_file: CULTURE.md`).
 - **Read by each seat once, at launch.** A running seat does not notice later edits.
@@ -11,7 +11,7 @@ That place is the culture file.
 
 Template: [../templates/CULTURE.md](../templates/CULTURE.md).
 
-## 8.2 What belongs in it
+## 10.2 What belongs in it
 
 | Section | Content |
 |---|---|
@@ -19,14 +19,14 @@ Template: [../templates/CULTURE.md](../templates/CULTURE.md).
 | Standing mission | The job, in order, with a stop condition ("until no `todo` row remains") |
 | Roles | What the owner does, what the checker does, who may merge |
 | Ledger | The file that tracks progress (for example `MIGRATION.md`) and how to update it |
-| Offload rules | When to use DeepSeek workers and how to review them (chapter 9) |
-| Token rules | When to compact (chapter 10) |
+| Offload rules | When to use DeepSeek workers and how to review them (chapter 11) |
+| Token rules | When to compact (chapter 12) |
 | Test account | The **path** of a private env file, never the secret |
 | Hard limits | No commits unless asked, no touching unrelated uncommitted files, no merge until done |
 
 Keep it short and concrete. Every sentence should change what an agent does.
 
-## 8.3 A good standing mission
+## 10.3 A good standing mission
 
 ```markdown
 ## Standing mission: finish agenthub_go/MIGRATION.md
@@ -42,7 +42,7 @@ only the user can give.
 Why it works: it gives a **ledger**, a **stop condition** and a rule that **removes the wait** between
 owner and checker (the two seats were each waiting for the other).
 
-## 8.4 After you edit the culture
+## 10.4 After you edit the culture
 
 1. Edit the file.
 2. Send each running seat a short message naming the changed section:
@@ -61,7 +61,7 @@ grep -c "Offloading to DeepSeek" ~/.claude/projects/<project>/<session-id>.jsonl
 
 Seats that restart from scratch read the file again at launch.
 
-## 8.5 Keeping the team going
+## 10.5 Keeping the team going
 
 Seats stop at the end of every turn. Combine three things:
 
@@ -73,7 +73,7 @@ Seats stop at the end of every turn. Combine three things:
 
 When you are done, stop the reminders (`rig watchdog stop <jobId>`) or they keep firing.
 
-## 8.6 Several teams on one code area
+## 10.6 Several teams on one code area
 
 Two teams on the same files overwrite each other. In the first run three rigs were set up for the
 same migration and had to be stopped. The second run kept two teams (a Claude pair and an `agy` pair)
@@ -91,19 +91,19 @@ a file both teams read (see [../templates/TEAM_SPLIT.md](../templates/TEAM_SPLIT
 - the end-to-end test runs once, by one named seat, when both teams have no `todo` rows.
 
 Put the same rules in `CULTURE.md` so a restored rig has them. Running seats read `CULTURE.md` only at
-launch, so also tell them (chapter 8.4) and point them at the shared file.
+launch, so also tell them (chapter 10.4) and point them at the shared file.
 
 **Do not copy permissions between culture files.** The old `agy` culture authorized a production
 deploy; that did not carry over to the new combined rig. Authorizations are per rig and per user
 decision: write them again deliberately or leave them out.
 
-**Each owner leads workers.** See chapter 9.0: the owner is the team leader and the DeepSeek jobs are
+**Each owner leads workers.** See chapter 11.0: the owner is the team leader and the DeepSeek jobs are
 its workers; the checker reviews the leader.
 
-## 8.7 Check
+## 10.7 Check
 
 - `culture_file` resolves (`rig spec preflight rig.yaml`).
 - Your mission has a ledger and a stop condition.
 - Each running seat's transcript contains your latest section title.
 
-Next: [chapter 9 — DeepSeek offload workflow](09-deepseek-offload-workflow.md).
+Next: [chapter 11 — the DeepSeek offload workflow](11-deepseek-offload-workflow.md).

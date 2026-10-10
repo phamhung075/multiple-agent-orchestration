@@ -1,4 +1,4 @@
-# 21. A standalone client for any project
+# 16. A standalone client for any project
 
 The machine-side tooling of a team (sync a room, keep contexts small, report status, show a grid)
 should not live inside the repository of the project it serves. If it does, every new project must
@@ -111,3 +111,5 @@ installation friction matters more than change speed, and it is done in phases:
    clean clone builds and passes its tests with no old runtime installed, and a reviewer signs off.
    Then point the command on the machine's `PATH` at the new binary and stop the old processes, or
    two supervisors will send to the same seat.
+
+Next: [chapter 17 — bootstrapping a new room](17-room-bootstrap-traps.md).

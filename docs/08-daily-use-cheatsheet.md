@@ -1,4 +1,4 @@
-# 7. Daily use — the cheat sheet
+# 8. Daily use — the cheat sheet
 
 All commands were used in the real run. `<seat>` means `member@rig`, for example `dev-owner@4genthub-go`.
 
@@ -30,7 +30,7 @@ All commands were used in the real run. `<seat>` means `member@rig`, for example
 | OpenRig web GUI | `rig ui open` (opens the default browser; needs the daemon, port 7433 by default: `rig daemon status`) |
 | OpenRig terminal dashboard | `rig tui` |
 | DeepSeek Harness web GUI | `npx @deepseek-ai/dsh web` → http://127.0.0.1:3080 |
-| The brain's dashboard — rooms, seats, resolved state, drift | https://www.4genthub.com/ ([chapter 16](16-completing-the-system-the-brain.md)) |
+| The brain's dashboard — rooms, seats, resolved state, drift | https://www.4genthub.com/ ([chapter 18](18-completing-the-system-the-brain.md)) |
 
 The OpenRig web UI is served by the daemon on its port and is **off by default**: opening
 `http://127.0.0.1:7433` returns "The OpenRig web UI is off". Turn it on once:
@@ -43,11 +43,11 @@ rig ui open
 
 herdr and the daemon are separate processes; `rig daemon status` shows whether the daemon is up.
 On WSL, if no browser window opens, browse to `http://127.0.0.1:7433` from Windows. See [chapter 5](05-terminals-and-runtimes.md)
-for herdr and [chapter 4](04-install-deepseek.md) for the DeepSeek GUI.
+for herdr and [chapter 6](06-install-deepseek.md) for the DeepSeek GUI.
 
 The brain's dashboard is the only view here that shows **drift** — where a seat's resolved state
 differs from what it was configured to be. A seat can be running locally and still be drifted, so
-this is the one thing the local tools cannot tell you ([chapter 16.3](16-completing-the-system-the-brain.md)).
+this is the one thing the local tools cannot tell you ([chapter 18.3](18-completing-the-system-the-brain.md)).
 
 ## Talk and give work
 
@@ -84,7 +84,7 @@ this is the one thing the local tools cannot tell you ([chapter 16.3](16-complet
 Restoring a rig that still has live sessions can fail with HTTP 409, and the daemon often believes
 sessions are alive when they are not. Try `rig up <rig> --existing` first — after a whole-fleet loss
 it has succeeded directly — and fall back to `rig down <rig> --snapshot` if it refuses
-([chapter 12](12-troubleshooting.md)).
+([chapter 23](23-troubleshooting.md)).
 
 ## Wake-ups (watchdogs)
 
@@ -140,4 +140,4 @@ node .agents/skills/deepseek-offload/scripts/session-tail.mjs <jobId> --watch
 bash scripts/status.sh ~/my-repo/agenthub_go/MIGRATION.md
 ```
 
-Next: [chapter 8 — culture and the standing mission](08-culture-and-standing-mission.md).
+Next: [chapter 9 — safety and security](09-safety-and-security.md).

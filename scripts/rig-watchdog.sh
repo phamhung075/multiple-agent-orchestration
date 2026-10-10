@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # rig-watchdog.sh — notice when a rig's tmux seats have vanished, and restore it.
 #
-# Chapters 12 and 14. Why this exists: every tool that answers "is it up?" asks the
+# Chapters 23 and 14. Why this exists: every tool that answers "is it up?" asks the
 # daemon's cached lifecycle. On 2026-10-05 the tmux server holding all ten seats of a
 # rig died; `rig ps` kept saying 10 running and `rig crash-cart` (a daemon-down
 # verdict) said "up". tmux is the ground truth, so this asks tmux.

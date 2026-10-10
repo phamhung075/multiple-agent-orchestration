@@ -1,8 +1,8 @@
-# 6. Your first team
+# 7. Your first team
 
 Goal: a two-seat team (owner + checker) working in one repository, launched from a spec file.
 
-## 6.1 The fastest start: a shipped starter
+## 7.1 The fastest start: a shipped starter
 
 OpenRig ships starters. For two Claude agents:
 
@@ -16,7 +16,7 @@ rig tui --shared
 
 Other starters: `first-project` (two Codex), `first-project-mixed` (Claude owner + Codex checker).
 
-## 6.2 Your own spec
+## 7.2 Your own spec
 
 Copy [../templates/rig.yaml](../templates/rig.yaml) next to your project and edit it.
 
@@ -69,19 +69,19 @@ rig spec preflight ./rig.yaml       # agent refs, policy, readiness
 rig policy current --spec ./rig.yaml
 ```
 
-## 6.3 Permission policy in one table
+## 7.3 Permission policy in one table
 
 | Spec line | Claude launch flag | Behavior |
 |---|---|---|
 | none | `--permission-mode acceptEdits` | Edits go through, other actions follow native rules and prompts |
-| `permission_policy: builtin:yolo` | `--dangerously-skip-permissions` | No prompts at all. Read chapter 13 first |
+| `permission_policy: builtin:yolo` | `--dangerously-skip-permissions` | No prompts at all. Read chapter 9 first |
 | `permission_policy: none` | `acceptEdits` | Explicit "I chose the floor" |
 
 A seat-level override beats the rig-level policy:
 `rig seat set-permissions <seat> --mode floor|full_bypass|inherit|auto --reason "<text>"`
 (applies to **future launches** only, and must be run from a seat, because it needs a seat identity).
 
-## 6.4 Launch
+## 7.4 Launch
 
 ```bash
 rig up ./rig.yaml --plan            # preview
@@ -96,7 +96,7 @@ The argument to `rig up` is:
 
 It is **not** a folder, and `rig up rig.yaml --existing` is wrong (it looks for a rig named "rig.yaml").
 
-## 6.5 Give the first task
+## 7.5 Give the first task
 
 ```bash
 rig send dev-owner@my-team "Implement <one bounded change>. Create and claim a queue task for it, \
@@ -108,7 +108,7 @@ rig queue list --destination dev-owner@my-team --limit 1000
 on the queue. From your own shell you cannot `rig queue create`, because that needs a seat identity;
 ask a seat to create the item.
 
-## 6.6 Add a second team (pod) to a running rig
+## 7.6 Add a second team (pod) to a running rig
 
 To run two teams on the same job (for example a Claude pair and an `agy` pair), add a pod to the
 running rig instead of starting another rig. Seat names are `<pod>-<member>@<rig>`, so use a new pod
@@ -148,12 +148,12 @@ Things to know **(verified 2026-10-02)**:
   created: run `rig ps --nodes --rig <rig>` before retrying.
 - The saved `rig.yaml` is **not** updated. Restoring from the spec will not bring the new pod back;
   add it to the spec too.
-- Two teams on one repo need a split of the work (chapter 8.6) or they will overwrite each other.
+- Two teams on one repo need a split of the work (chapter 10.6) or they will overwrite each other.
 
-## 6.7 Check
+## 7.7 Check
 
 - `rig ps --nodes --rig my-team` shows `working` or `idle`, lifecycle `run`.
 - `ps -eo args | grep dangerously-skip-permissions` shows the flag when you chose yolo.
 - `rig capture dev-owner@my-team --lines 30` shows the agent's screen.
 
-Next: [chapter 7 — daily use](07-daily-use-cheatsheet.md).
+Next: [chapter 8 — daily use](08-daily-use-cheatsheet.md).

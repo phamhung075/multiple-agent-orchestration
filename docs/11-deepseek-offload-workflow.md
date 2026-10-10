@@ -1,4 +1,4 @@
-# 9. The DeepSeek offload workflow
+# 11. The DeepSeek offload workflow
 
 The pattern that moved most of the typing off the expensive model: **waves of background workers,
 reviewed by the owner and the checker.**
@@ -13,7 +13,7 @@ reviewed by the owner and the checker.**
  launch next wave                                                          verdict on the queue
 ```
 
-## 9.0 The ladder: owner leads, workers do
+## 11.0 The ladder: owner leads, workers do
 
 Each team is a ladder. The **owner** is the team leader; the **DeepSeek jobs** are its workers; the
 **checker** reviews the leader's integrated output. The owner plans a slice, splits it into
@@ -38,7 +38,7 @@ job ids"), plus checking that jobs exist (9.7).
 
 Rule of thumb from the skill: if the work produces more intermediate text than final text, offload it.
 
-## 9.2 What to offload, what to keep
+## 11.2 What to offload, what to keep
 
 | Offload | Keep in the expensive model |
 |---|---|
@@ -47,7 +47,7 @@ Rule of thumb from the skill: if the work produces more intermediate text than f
 | Reading long logs or test output | Secrets, credentials, production access |
 | Drafting docs, translations | The review and the final "done" decision |
 
-## 9.3 The shared prompt (`common.md`)
+## 11.3 The shared prompt (`common.md`)
 
 Write one file with the hard rules, then append the module list per job. A real example shape
 ([../templates/dsh-prompt-common.md](../templates/dsh-prompt-common.md)):
@@ -71,7 +71,7 @@ YOUR MODULES:
 
 Then one file per job: `scratch/dsh-prompts/w6-01.md` = `common.md` + a list of modules.
 
-## 9.4 Launch a wave
+## 11.4 Launch a wave
 
 ```bash
 R=.agents/skills/deepseek-offload/scripts/dsh-offload.mjs
@@ -84,7 +84,7 @@ node $R list              # watch states: running → done
 
 Keep a wave running while you review the previous one.
 
-## 9.5 Following and steering
+## 11.5 Following and steering
 
 ```bash
 node $R status <jobId>
@@ -97,7 +97,7 @@ node $R result <jobId>
 The web GUI at `http://127.0.0.1:3080` lists the session under your project folder but **cannot show
 a running job**. Do not prompt a job's row in the GUI.
 
-## 9.6 The review gate (non-negotiable)
+## 11.6 The review gate (non-negotiable)
 
 A worker's report is a draft. Before a ledger row is marked `done`:
 
@@ -109,11 +109,11 @@ A worker's report is a draft. Before a ledger row is marked `done`:
 
 Never trust "tests pass" from a worker. Never put credentials or production details in a prompt.
 
-## 9.7 Pitfalls we hit
+## 11.7 Pitfalls we hit
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| Seats had DeepSeek attached but never used it | Nothing told them to | Add the offload section to `CULTURE.md` **and** message the seats (chapter 8) |
+| Seats had DeepSeek attached but never used it | Nothing told them to | Add the offload section to `CULTURE.md` **and** message the seats (chapter 10) |
 | Told to delegate, still no jobs | Message sat in the seat's queue behind a long turn, or was lost in a compaction | Look for jobs, not words: `node $R list \| grep job-$(date -u +%Y%m%d)`; resend an imperative, specific order (9.0) |
 | Every job ends `error` in seconds, `Insufficient Balance` | The DeepSeek account has no credit | Top up, then prove it with a tiny job: `node $R start "Reply OK" --read-only --json` must end `done`. Tell seats not to retry in a loop |
 | Count of `mcp__deepseek__*` calls is 0 but jobs exist | The owner used the runner from Bash, not the MCP tool | Count Bash calls to `dsh-offload.mjs`, and `node $R list` |
@@ -121,15 +121,15 @@ Never trust "tests pass" from a worker. Never put credentials or production deta
 | Job edited unrelated files | The prompt did not forbid it | Keep the "write only under X" rule; the checker's diff review catches it |
 | A worker failed to build | Missing helper | Tell it which helpers to reuse; finish by hand after two failures |
 
-## 9.8 Cost control
+## 11.8 Cost control
 
 - `node $R window` shows DeepSeek's peak and off-peak pricing; `start --defer-to-off-peak` schedules
   batch work at the cheaper time.
 - Model choice: `deepseek-flash` (default) or `deepseek-v4-pro` via `install.sh --model`.
 
-## 9.9 Check
+## 11.9 Check
 
 You can launch a wave of three jobs, see them `done` in `node $R list`, and mark one row `done` only
 after you read its diff and ran the build.
 
-Next: [chapter 10 — token economy](10-token-economy-and-compaction.md).
+Next: [chapter 12 — token economy and compaction](12-token-economy-and-compaction.md).

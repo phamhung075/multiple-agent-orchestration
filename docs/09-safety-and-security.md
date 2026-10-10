@@ -1,9 +1,9 @@
-# 13. Safety and security
+# 9. Safety and security
 
 Agents that run without permission prompts are powerful and can do real damage. Set the limits
 before you start the team.
 
-## 13.1 Permission postures
+## 9.1 Permission postures
 
 | Posture | Launch | When |
 |---|---|---|
@@ -20,7 +20,7 @@ Facts:
   applies at the next launch.
 - To go back: `rig policy apply none --spec rig.yaml`, and `rig seat set-permissions <seat> --mode inherit`.
 
-## 13.2 Blast radius checklist (before yolo)
+## 9.2 Blast radius checklist (before yolo)
 
 - The repo has a clean or backed-up state. Uncommitted work you care about is committed or stashed,
   or the team is told in `CULTURE.md` never to touch it.
@@ -28,7 +28,7 @@ Facts:
 - No secrets in the repo, in prompts, in queue items, or in `CULTURE.md`.
 - Remote git credentials: the team is told **not to push** until the job is done.
 
-## 13.3 Secrets
+## 9.3 Secrets
 
 | Do | Don't |
 |---|---|
@@ -42,7 +42,7 @@ Deleting later does not remove it; rotate it.
 
 Template: [../templates/e2e-account.env.example](../templates/e2e-account.env.example).
 
-## 13.4 Rules for the culture file (copy these)
+## 9.4 Rules for the culture file (copy these)
 
 ```markdown
 - Never stage or revert files you did not change. The repo may hold unrelated uncommitted work.
@@ -52,7 +52,7 @@ Template: [../templates/e2e-account.env.example](../templates/e2e-account.env.ex
 - Production deploys are authorized per rig by the user, in words. Never copy such a section from another culture file.
 ```
 
-## 13.5 What the tools themselves change
+## 9.5 What the tools themselves change
 
 - OpenRig writes trust settings and activity hooks into `~/.claude.json` and the workspace
   `.claude/settings.local.json`, and a block in `~/.tmux.conf`.
@@ -62,7 +62,7 @@ Template: [../templates/e2e-account.env.example](../templates/e2e-account.env.ex
 - Anything a seat is allowed to run, it can run on a loop. Do not leave an unattended yolo team on a
   repo you cannot restore.
 
-## 13.6 Stopping everything
+## 9.6 Stopping everything
 
 ```bash
 rig down <rig> --snapshot             # stop a team, keep its state
@@ -71,14 +71,14 @@ node .agents/skills/deepseek-offload/scripts/dsh-offload.mjs list     # cancel r
 node .agents/skills/deepseek-offload/scripts/dsh-offload.mjs cancel <jobId>
 ```
 
-## 13.7 Review before you trust
+## 9.7 Review before you trust
 
 - The checker seat verifies the exact diff and runs the build.
 - You read the ledger and `git diff --stat` before any merge.
 - Audit claims with evidence: transcripts (`~/.claude/projects/…`), `dsh-offload.mjs list`,
   `rig ps`, not with what a seat says about itself.
 
-## 13.8 Blast radius the orchestrator itself introduces
+## 9.8 Blast radius the orchestrator itself introduces
 
 The checklist in 13.2 is about what a *seat* can reach. There is a second, quieter radius: what one
 *component* can take down.
@@ -91,7 +91,7 @@ and on 2026-10-05 it cost ten seats in a single second (chapter 14).
 Plan for it as shared fate:
 
 - Run **different projects on different machines**, or accept that one bad night stops all of them.
-- Seats under **herdr** are unaffected by a tmux server death (chapter 12) — worth knowing when you
+- Seats under **herdr** are unaffected by a tmux server death (chapter 23) — worth knowing when you
   choose where a long-running team lives.
 - Watch liveness per rig, not per project ([../scripts/rig-watchdog.sh](../scripts/rig-watchdog.sh)).
 - Assume nothing you cannot rebuild: the recovery cost is elapsed time, and only because a seat's
@@ -100,4 +100,4 @@ Plan for it as shared fate:
 The same instinct applies to the daemon and to any shared resource you introduce — one queue, one
 database, one socket per machine is a convenience that silently makes every failure total.
 
-Next: [chapter 14 — keeping the fleet alive](14-keeping-the-fleet-alive.md).
+Next: [chapter 10 — culture and the standing mission](10-culture-and-standing-mission.md).

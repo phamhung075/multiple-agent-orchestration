@@ -1,92 +1,104 @@
 # Multiple-Agent Orchestration
 
-A practical, step-by-step guide to running a **team of AI coding agents** on your own machine: a pod
-of seats that work in parallel, hand work to each other through a durable queue, and can be staffed
-with a cheap or an expensive model without renaming anything.
+How to run a team of AI coding agents on your own machine, on any project. The agents work in
+parallel, hand work to each other through a queue that survives restarts, and can be staffed with a
+cheap or an expensive model without renaming anything.
 
-The system has **two halves**. Locally, OpenRig launches and supervises the seats in tmux — that is
-chapters 1–14. In the cloud, a **brain** holds the state for orchestration: rooms, seats, seat types,
-tasks, and the resolved state the client reports — that is chapters 15–16.
+The guide builds one system from five tools:
 
-The early chapters teach the simplest form that works (a couple of seats, work offloaded to a cheap
-model as a tool call). Chapters 14–20 are what the same system looked like after months of real use:
-liveness monitoring, a seat model with swappable occupants, and the cloud brain that completes it.
-[Chapter 15.9](docs/15-architecture-seat-model-and-cloud.md) lists exactly what changed, so you can
-read the early chapters without being misled by them.
+| Tool | Job |
+|---|---|
+| **OpenRig** (`rig`) | Starts the team from a YAML file, keeps the queue, routes messages |
+| **herdr and tmux** | The terminals the agents run in, and one window that shows all of them |
+| **deepseek-offload** | Lets an agent give bulk typing to a cheap model in the background |
+| **Self-compaction** | A supervisor that shrinks each agent's context before it fills up |
+| **4genthub client** (`4genteam`) | One binary that starts the stack and talks to the cloud |
 
-This guide was written from a real run: a team of agents migrated a production Python server
-(`4genthub`) to Go, file by file, while the human watched and steered. Everything here was
-done on one WSL2 machine on 2026-10-01 and the commands were checked there. A second session on
-2026-10-02 added a second team (two pods in one rig), the owner-leads-workers rule and the fixes in
-chapter 12. A third session on 2026-10-05 added **chapter 14** and rewrote the fleet-loss entry in
-chapter 12, after a whole-fleet tmux crash was diagnosed on the same machine, and **chapter 15**,
-which records the architecture the project converged into — the seat model (position vs occupant,
-seat types you own) and the cloud/client split — plus **chapter 16**, the runbook for adding the
-cloud brain (4genthub) that completes the system.
+A sixth part is optional: **4genthub**, a cloud service that keeps rooms, seats and tasks outside
+your disk and shows them in a browser.
 
 ![Overview: LLMs, agents, skill offload, DeepSeek Harness, OpenRig + herdr](demo.jpg)
 
-## What you will build
+It was written from a real run. A team of agents ported a production Python server to Go while a
+person watched and steered. The commands were checked on one WSL2 machine.
 
-```
-                you (human)
-                    │  dashboard · rig send · rig queue · rig tui
-    ┌───────────────┴─────────────────────┐
-    │  THE BRAIN (cloud, ch. 15–16)       │  rooms · seats · seat types
-    │  state for orchestration            │  tasks · context · resolved state
-    └───────────────┬─────────────────────┘
-                    │ pull: the client renders the rig and seat files to disk
-    ┌───────────────▼─────────────────────┐
-    │  OpenRig daemon (local, ch. 1–14)   │  rigs = teams · queue = work
-    │  launches and supervises the seats  │  watchdogs · liveness probe (ch. 14)
-    └───────────────┬─────────────────────┘
-                    │ tmux / herdr panes
-    ┌───────────────▼─────────────────────┐
-    │  seats: lead · specialists ·        │  occupant runtimes:
-    │  reviewer, in one pod on one queue  │  claude-code · codex · agy · omp
-    └─────────────────────────────────────┘
-        seats commit locally, never push; the reviewer is the gate
-```
+## Where to start
 
-Start with the local half alone if you like — chapters 1–14 stand on their own. The brain is what
-makes the portfolio outlive one machine and be visible to someone not sitting at a terminal.
+- **You want it working today:** read [chapter 2](docs/02-blueprint.md), then follow the
+  [recipe in chapter 19](docs/19-recipe-new-project.md). It points into the other chapters when you
+  need the detail.
+- **You want to understand it first:** read the chapters in order. The order is the build order.
 
-## How to read this guide
+## The chapters, in build order
 
-Follow the chapters in order the first time. Most end with a **Check** you can run. Chapters 14–16
-are the ones to read even if you skip the rest — they cover what breaks a long-running team, and the
-architecture it converges into.
+### Part 1. Understand and prepare
 
-| # | File | You will learn |
-|---|------|----------------|
-| 1 | [docs/01-introduction.md](docs/01-introduction.md) | The ideas and vocabulary: rig, seat, pod, queue, culture, offload |
-| 2 | [docs/02-prerequisites.md](docs/02-prerequisites.md) | Machine, accounts and versions you need first |
-| 3 | [docs/03-install-openrig.md](docs/03-install-openrig.md) | Install OpenRig (`rig`) and start the daemon |
-| 4 | [docs/04-install-deepseek.md](docs/04-install-deepseek.md) | Install the DeepSeek Harness and `deepseek-offload` |
-| 5 | [docs/05-terminals-and-runtimes.md](docs/05-terminals-and-runtimes.md) | tmux, herdr, Claude Code and `agy` runtimes |
-| 6 | [docs/06-first-team.md](docs/06-first-team.md) | Write a `rig.yaml`, launch your first team |
-| 7 | [docs/07-daily-use-cheatsheet.md](docs/07-daily-use-cheatsheet.md) | Every command you use day to day |
-| 8 | [docs/08-culture-and-standing-mission.md](docs/08-culture-and-standing-mission.md) | Give the team a mission that survives restarts |
-| 9 | [docs/09-deepseek-offload-workflow.md](docs/09-deepseek-offload-workflow.md) | Run waves of DeepSeek workers and review them |
-| 10 | [docs/10-token-economy-and-compaction.md](docs/10-token-economy-and-compaction.md) | Spend fewer tokens: compaction, watchdogs, offload |
-| 11 | [docs/11-case-study-python-to-go.md](docs/11-case-study-python-to-go.md) | The real migration, step by step |
-| 12 | [docs/12-troubleshooting.md](docs/12-troubleshooting.md) | Every problem we actually hit, with the fix |
-| 13 | [docs/13-safety-and-security.md](docs/13-safety-and-security.md) | Permissions, secrets, blast radius |
-| 14 | [docs/14-keeping-the-fleet-alive.md](docs/14-keeping-the-fleet-alive.md) | Liveness vs activity: notice a dead fleet, heartbeat the watchdog, recover in a minute |
-| 15 | [docs/15-architecture-seat-model-and-cloud.md](docs/15-architecture-seat-model-and-cloud.md) | Where this converges: position vs occupant, seat types you own, and the cloud/client split |
-| 16 | [docs/16-completing-the-system-the-brain.md](docs/16-completing-the-system-the-brain.md) | Runbook: add the cloud brain (4genthub) to complete the system |
-| 17 | [docs/17-self-compaction-supervisor.md](docs/17-self-compaction-supervisor.md) | A supervisor per room that compacts idle seats and verifies the drop |
-| 18 | [docs/18-room-bootstrap-traps.md](docs/18-room-bootstrap-traps.md) | The four traps of a new room (key, working directory, policy, first launch) and the client that removes them |
-| 19 | [docs/19-ab-room-for-guide-variants.md](docs/19-ab-room-for-guide-variants.md) | An A/B room beside production: pick seat instructions by quality per cost |
-| 20 | [docs/20-working-agreements-shared-repo.md](docs/20-working-agreements-shared-repo.md) | Pathspec commits, one changelog file per change, small docs, a plain writing rule, pinned guides |
-| 21 | [docs/21-a-standalone-client-for-any-project.md](docs/21-a-standalone-client-for-any-project.md) | The brain, the workplace and the connector; one credential; one skills tree; a cost gate; a one-language client |
+| # | Chapter | You will learn |
+|---|---|---|
+| 1 | [Introduction](docs/01-introduction.md) | The problem, the idea and the vocabulary: rig, seat, pod, queue, offload |
+| 2 | [The blueprint](docs/02-blueprint.md) | The finished system on one page, how the parts connect, and the build order |
+| 3 | [Prerequisites](docs/03-prerequisites.md) | The machine, accounts and versions you need first |
+
+### Part 2. Install the tools
+
+| # | Chapter | You will learn |
+|---|---|---|
+| 4 | [Install OpenRig](docs/04-install-openrig.md) | Install `rig` and start the daemon |
+| 5 | [Terminals and runtimes](docs/05-terminals-and-runtimes.md) | tmux, herdr, Claude Code and agy, and why a seat may not be where you look |
+| 6 | [Install the DeepSeek workers](docs/06-install-deepseek.md) | The DeepSeek Harness and deepseek-offload |
+
+### Part 3. Run a first team
+
+| # | Chapter | You will learn |
+|---|---|---|
+| 7 | [Your first team](docs/07-first-team.md) | Write a `rig.yaml` and launch two seats |
+| 8 | [Daily-use cheat sheet](docs/08-daily-use-cheatsheet.md) | The commands you use every day |
+| 9 | [Safety and security](docs/09-safety-and-security.md) | Permissions, secrets and blast radius. Read before the team runs alone |
+
+### Part 4. Make it run for hours
+
+| # | Chapter | You will learn |
+|---|---|---|
+| 10 | [Culture and the standing mission](docs/10-culture-and-standing-mission.md) | A mission file that survives restarts |
+| 11 | [The DeepSeek offload workflow](docs/11-deepseek-offload-workflow.md) | Waves of cheap workers, reviewed before they are accepted |
+| 12 | [Token economy and compaction](docs/12-token-economy-and-compaction.md) | Spend fewer tokens, and what to restore after a compaction |
+| 13 | [The compaction supervisor](docs/13-self-compaction-supervisor.md) | Compact seats automatically and check that it worked |
+| 14 | [Keeping the fleet alive](docs/14-keeping-the-fleet-alive.md) | Notice a dead fleet and recover in a minute |
+
+### Part 5. Scale it and make it reusable
+
+| # | Chapter | You will learn |
+|---|---|---|
+| 15 | [The seat model and the cloud split](docs/15-architecture-seat-model-and-cloud.md) | Position versus occupant, seat types you own, what runs where |
+| 16 | [A standalone client for any project](docs/16-a-standalone-client-for-any-project.md) | Why the client lives outside every project, one credential, one skills tree |
+| 17 | [Bootstrapping a new room](docs/17-room-bootstrap-traps.md) | The four traps of a new room and the client that removes them |
+| 18 | [Adding the cloud brain](docs/18-completing-the-system-the-brain.md) | Runbook for 4genthub: rooms, seats, tokens, the dashboard |
+| 19 | [The recipe for a new project](docs/19-recipe-new-project.md) | The whole system on a new project, step by step, with a check for each step |
+
+### Part 6. Work as a team in one repository
+
+| # | Chapter | You will learn |
+|---|---|---|
+| 20 | [Working agreements](docs/20-working-agreements-shared-repo.md) | Pathspec commits, one changelog file per change, small docs, batched doc commits |
+| 21 | [An A/B room for seat instructions](docs/21-ab-room-for-guide-variants.md) | Test a change to the seats' instructions beside the real team |
+
+### Reference
+
+| # | Chapter | You will learn |
+|---|---|---|
+| 22 | [Case study: Python to Go](docs/22-case-study-python-to-go.md) | The real migration, step by step |
+| 23 | [Troubleshooting](docs/23-troubleshooting.md) | Every problem we hit, with cause and fix |
 | – | [SOURCES.md](SOURCES.md) | Every source, repo, package and path this guide relies on |
 
-Ready-to-copy files:
+Chapters 15 to 21 describe the system after months of use. Section 15.9 lists what changed compared
+with the simple form taught in chapters 7 to 12, so the early chapters do not mislead you.
 
-- [templates/](templates/) — `rig.yaml` (two seats), `rig-omp-10-seats.yaml` (a real ten-seat pod),
-  `CULTURE.md`, `TEAM_SPLIT.md`, watchdog reminder, DeepSeek prompt, e2e account example, migration ledger
-- [scripts/](scripts/) — `doctor.sh` (check the machine), `status.sh` (one-screen status of teams and
+## Ready-to-copy files
+
+- [templates/](templates/): `rig.yaml` (two seats), `rig-omp-10-seats.yaml` (a real ten-seat pod),
+  `CULTURE.md`, `TEAM_SPLIT.md`, a watchdog reminder, a DeepSeek prompt, an e2e account example and a
+  migration ledger
+- [scripts/](scripts/): `doctor.sh` (check the machine), `status.sh` (one-screen status of teams and
   migration) and `rig-watchdog.sh` (catch and restore a rig whose seats have vanished)
 
 ## The five-minute version
@@ -101,17 +113,15 @@ rig send dev-owner@my-team "Do <one bounded task>. Track it on the queue."
 rig ps --nodes --rig my-team         # 5. watch it work
 ```
 
-Then read chapters 8–10 to make the team run for hours without you, [chapter 14](docs/14-keeping-the-fleet-alive.md)
-to keep it alive while you are not looking, and [chapter 16](docs/16-completing-the-system-the-brain.md)
-to add the cloud brain, and [chapter 21](docs/21-a-standalone-client-for-any-project.md) to keep the
-machine-side client separate from every project.
+After that, follow the [recipe](docs/19-recipe-new-project.md) to add the cheap workers, automatic
+compaction, the watchdog and the client.
 
 ## Honesty notes
 
 - Commands marked **(verified)** were run on the author's machine. Anything marked **(not verified)**
   comes from upstream docs only. When a tool changes, trust `rig --help` over this text.
 - OpenRig 0.6.3 and the DeepSeek Harness (`0.1.7-rc.2`, developer preview) change quickly.
-- The brain in chapter 16 is **4genthub** (<https://www.4genthub.com/>), the cloud half this guide
+- The brain in chapter 18 is **4genthub** (<https://www.4genthub.com/>), the cloud half this guide
   pairs with OpenRig. Its wording is taken from its own landing page, which was rewritten to claim
   only what ships; the platform is still moving, so trust it over this text.
 - No credentials are stored in this guide. [templates/e2e-account.env.example](templates/e2e-account.env.example)

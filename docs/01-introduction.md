@@ -22,6 +22,8 @@ The picture at the top of the [README](../README.md) shows the same stack: LLMs 
 agent layers in the middle (decision, planning, task execution), skill offload to DeepSeek at the
 bottom left, and OpenRig + herdr as the tooling at the bottom right.
 
+Chapter 2 shows the finished system on one page and the order to build it in.
+
 ## The components
 
 | Layer | Component | Job |
@@ -57,16 +59,18 @@ bottom left, and OpenRig + herdr as the tooling at the bottom right.
 2. **One team per code area.** Two teams editing the same files overwrite each other.
 3. **The expensive model reviews, the cheap model drafts.** A worker's "tests pass" is never trusted.
 4. **The culture file is the source of truth, but a running seat reads it only at launch.** After
-   editing it, send the seats a message (chapter 8).
+   editing it, send the seats a message (chapter 10).
 5. **Never merge before the whole job is done and tested.**
 
 ## What it is not
 
 - It is not magic. Agents stop, loop, or disagree. The system's value is that it recovers
   (queue, ledger, wake-ups, snapshots) and that you can see everything.
-- It is not safe by default when you disable permission prompts. Read chapter 13 first.
+- It is not safe by default when you disable permission prompts. Read chapter 9 first.
 
 ## Check
 
 You should be able to explain, in one sentence each: what a rig is, why work goes on a queue, and why
-the culture file exists. Continue to [chapter 2](02-prerequisites.md).
+the culture file exists. Continue to [chapter 3](03-prerequisites.md).
+
+Next: [chapter 2 — the blueprint](02-blueprint.md).

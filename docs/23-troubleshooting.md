@@ -1,4 +1,4 @@
-# 12. Troubleshooting
+# 23. Troubleshooting
 
 Every entry below happened during the real run. Format: **symptom → cause → fix**.
 
@@ -93,10 +93,10 @@ Wait for a turn boundary, or interrupt (Escape) and resend a short, imperative i
 
 ### Two seats waiting on each other
 Add to the culture: "owner never waits for the checker; queue the slice and start the next one", and
-register reminders (chapter 8).
+register reminders (chapter 10).
 
 ### A seat does not follow a new rule
-It reads `CULTURE.md` only at launch. → Message it (chapter 8). Verify with
+It reads `CULTURE.md` only at launch. → Message it (chapter 10). Verify with
 `grep -c "<section title>" ~/.claude/projects/<project>/<session>.jsonl`.
 
 ## The machine
@@ -131,7 +131,7 @@ for the probe that catches this in 60 s instead of 2 m 16 s, and `~/.openrig/ope
 Same as above for tmux seats. Restore them.
 
 ### Memory pressure on WSL2
-`dmesg | grep -i 'Out of memory'` shows OOM kills. Raise `memory=` in `.wslconfig` (chapter 2), close
+`dmesg | grep -i 'Out of memory'` shows OOM kills. Raise `memory=` in `.wslconfig` (chapter 3), close
 heavy tools (language servers, browsers), and avoid running many seats plus builds at once.
 
 ### Daemon log shows `SIGTERM … shutting down`
@@ -143,7 +143,7 @@ stale states for a minute. Wait, re-run `rig ps`, then restore what is stopped.
 ### Seats have the DeepSeek MCP attached but never call it
 Nothing told them to, or they were told and did not act. → Add the offload section to `CULTURE.md`,
 message the seats, then **count jobs**: `node $R list | grep job-$(date -u +%Y%m%d)`. Zero means no
-delegation, whatever the seats said (chapters 8–9).
+delegation, whatever the seats said (chapters 10–11).
 
 ### Every DeepSeek job ends `error`, result says `Insufficient Balance`
 The DeepSeek account is out of credit. `doctor` can still pass. → Run
@@ -155,7 +155,7 @@ The `acp` profile pins a model your provider route does not accept. →
 `.agents/deepseek-offload/install.sh --model deepseek-flash` (or `deepseek-v4-pro`).
 
 ### Jobs run but the GUI shows nothing live
-Expected for a released GUI. → `session-tail.mjs <jobId> --watch`. See chapter 9.
+Expected for a released GUI. → `session-tail.mjs <jobId> --watch`. See chapter 11.
 
 ### Job output is wrong or edited unrelated files
 Treat it as a draft: review the diff, run the build, fix by hand. Tighten the prompt's hard rules.
@@ -191,4 +191,4 @@ they disagree, the ground truth wins and every other tool will mislead you in th
 
 `rig context get help` prints the help guide for your installed version.
 
-Next: [chapter 13 — safety and security](13-safety-and-security.md).
+Back to the [README](../README.md).

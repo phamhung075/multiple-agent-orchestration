@@ -1,8 +1,8 @@
-# 3. Install OpenRig
+# 4. Install OpenRig
 
 OpenRig provides the `rig` command and a background daemon (`127.0.0.1:7433`).
 
-## 3.1 Install
+## 4.1 Install
 
 ```bash
 npm install -g @openrig/cli          # published package
@@ -23,7 +23,7 @@ cd ~/__projects__/openrig && npm install
 > Source builds can sit in a half-merged state. If `rig` fails to run or `git status` shows `UU`
 > conflicts, use the published package instead.
 
-## 3.2 What setup changes on your machine
+## 4.2 What setup changes on your machine
 
 From the OpenRig README (upstream), summarized:
 
@@ -42,9 +42,9 @@ rig setup                            # apply
 
 When asked "Allow your agents to run OpenRig commands without repeated permission prompts?" the
 recommended answer is Yes. It lets seats call `rig` without a prompt each time. It is separate from
-the broad bypass in chapter 13.
+the broad bypass in chapter 9.
 
-## 3.3 Start the daemon and the kernel
+## 4.3 Start the daemon and the kernel
 
 ```bash
 rig daemon start                     # starts the daemon, verifies the kernel
@@ -55,7 +55,7 @@ rig tui                              # terminal UI (rig tui --shared attaches to
 On first start the daemon creates the **kernel** rig from the shipped variant that matches your
 logged-in runtimes (`rig-claude-only.yaml`, `rig-codex-only.yaml`, `rig-agy-only.yaml` or the mixed one).
 
-## 3.4 Check
+## 4.4 Check
 
 ```bash
 rig --version
@@ -67,7 +67,7 @@ rig config                # resolved configuration with sources
 Expected: the kernel has `advisor-lead`, `operator-agent`, `operator-human`, `queue-worker`.
 `operator-human` is a plain terminal showing `rig tui`.
 
-## 3.5 Useful files
+## 4.5 Useful files
 
 | Path | Content |
 |---|---|
@@ -77,7 +77,7 @@ Expected: the kernel has `advisor-lead`, `operator-agent`, `operator-human`, `qu
 | `~/.openrig/specs/` | A good place for your team specs |
 | `~/.openrig/workspace/` | Default workspace for kernel seats |
 
-## 3.6 Getting help
+## 4.6 Getting help
 
 ```bash
 rig --help
@@ -86,4 +86,4 @@ rig context get help          # help guide for your installed version
 rig context list              # shipped skills and context packs
 ```
 
-Next: [chapter 4 — DeepSeek](04-install-deepseek.md).
+Next: [chapter 5 — terminals and runtimes](05-terminals-and-runtimes.md).

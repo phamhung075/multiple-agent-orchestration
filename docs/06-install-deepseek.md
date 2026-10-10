@@ -1,4 +1,4 @@
-# 4. Install the DeepSeek workers
+# 6. Install the DeepSeek workers
 
 Two pieces:
 
@@ -12,7 +12,7 @@ Claude seat ──MCP or Bash──▶ deepseek-offload ──ACP──▶ dsh -
                                     └── files the finished session in the dsh web GUI (http://127.0.0.1:3080)
 ```
 
-## 4.1 DeepSeek Harness
+## 6.1 DeepSeek Harness
 
 Upstream says it is a **developer preview with compatibility-breaking changes**. Read its `SAFETY.md`.
 
@@ -51,7 +51,7 @@ Never commit it. `DEEPSEEK_BASE_URL` is optional.
 `DSH_HOME` (default `~/.dsh`) holds `profiles/`, `plugins/` and `sessions/`. The bridge and the web GUI
 must share it, or the sessions never show up in the GUI.
 
-## 4.2 deepseek-offload in your project
+## 6.2 deepseek-offload in your project
 
 Run from the project that will own the jobs:
 
@@ -80,7 +80,7 @@ Useful flags: `--model NAME`, `--permission allow|reject`, `--dsh-root DIR`, `--
 > `--permission allow` (the default) means delegated jobs run unattended and auto-accept every
 > permission prompt. Use `--permission reject` for read-only or untrusted work.
 
-## 4.3 Check
+## 6.3 Check
 
 ```bash
 R=.agents/skills/deepseek-offload/scripts/dsh-offload.mjs
@@ -101,10 +101,10 @@ node .agents/skills/deepseek-offload/scripts/session-tail.mjs <jobId> --watch
 Other runner commands: `wait`, `update <jobId> "<new info>"` (steer a running job), `cancel`,
 `sessions`, `sync-workspace`, and `start --defer-to-off-peak` (wait for cheaper pricing).
 
-## 4.4 What the project gains
+## 6.4 What the project gains
 
 After install the project has `.mcp.json` with a `deepseek` entry. Claude seats started in that
 folder get four MCP tools: `deepseek_agent`, `deepseek_list_sessions`, `deepseek_update_session`,
 `deepseek_mcp_servers`. The bridge's git write guard refuses commits and pushes from jobs by default.
 
-Next: [chapter 5 — terminals and runtimes](05-terminals-and-runtimes.md).
+Next: [chapter 7 — your first team](07-first-team.md).

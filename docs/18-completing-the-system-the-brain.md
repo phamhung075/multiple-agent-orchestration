@@ -1,4 +1,4 @@
-# 16. Completing the system: adding the brain
+# 18. Completing the system: adding the brain
 
 Chapters 1–15 build a working local system: seats in a pod, a queue, a reviewer, a liveness watchdog.
 Everything in it lives on **one machine**, and that is the limitation this chapter closes.
@@ -11,7 +11,7 @@ configuration from and reports back to.
 This chapter is an implementation runbook for adding that brain, using **4genthub**
 (<https://www.4genthub.com/>) — the cloud half this guide's sibling project pairs with OpenRig.
 
-## 16.1 What the brain is
+## 18.1 What the brain is
 
 4genthub is the cloud platform for the human side of agent work. The pieces that matter here:
 
@@ -32,7 +32,7 @@ This is the same split [chapter 15](15-architecture-seat-model-and-cloud.md) des
 the orchestrator is the client and runtime; the cloud holds the data for orchestration. The cloud
 never reaches into your machine — the client initiates every exchange.
 
-## 16.2 What the brain adds that a local orchestrator cannot
+## 18.2 What the brain adds that a local orchestrator cannot
 
 | Without a brain (chapters 1–15) | With the brain |
 |---|---|
@@ -46,7 +46,7 @@ The last row is the one to appreciate: because a seat is a *position* and the ru
 *occupant*, you can staff a seat with a cheap model overnight and an expensive one when it matters —
 without renaming anything, or losing the queue and history attached to that seat.
 
-## 16.3 The runbook
+## 18.3 The runbook
 
 Four steps. Steps 1–2 are in the cloud; steps 3–4 bring your local system (chapters 3–14) up against
 it.
@@ -90,7 +90,7 @@ the runtime half:
    constraint everywhere: a rig spec accepts only local or relative agent references, so the cloud
    cannot hand the daemon an agent — it emits files, and the client writes them where the spec points.
 2. Launch the rig (`rig up ./rig.yaml`, or `rig up <rig> --existing` if it already exists) — see
-   [chapter 6](06-first-team.md) and [templates/rig.yaml](../templates/rig.yaml).
+   [chapter 7](07-first-team.md) and [templates/rig.yaml](../templates/rig.yaml).
 3. Match each seat's **role file to its occupant runtime**. A role written for one runtime's toolset
    handed to a different runtime misroutes: it will look for tools that runtime does not have
    ([chapter 15.3](15-architecture-seat-model-and-cloud.md)).
@@ -127,7 +127,7 @@ browser to a seat are **not available yet**.
 **Check:** the dashboard shows the seats you launched, and drift is empty. If it is not, treat the
 drift as the bug — not the dashboard.
 
-## 16.4 Why the three scopes matter
+## 18.4 Why the three scopes matter
 
 The same seat type will be used by a team that wants a module and a team that must not have it. Two
 bad answers are common: clone the seat type (now you maintain two), or edit it (now you broke the
@@ -142,7 +142,7 @@ modules. Use the broadest scope that expresses the rule:
 
 Pin a module version when a seat must not move; leave it unpinned when it should track the type.
 
-## 16.5 Verify the complete system
+## 18.5 Verify the complete system
 
 Walk the loop once, end to end, and confirm each hop:
 
@@ -150,10 +150,10 @@ Walk the loop once, end to end, and confirm each hop:
 # 1. the local half is alive (chapter 14)
 scripts/rig-watchdog.sh --check
 
-# 2. the seats know their positions (chapter 15.4)
+# 3. the seats know their positions (chapter 15.4)
 rig whoami --json
 
-# 3. the brain agrees with the machine
+# 4. the brain agrees with the machine
 #    -> dashboard: seats present, no drift
 ```
 
@@ -165,16 +165,16 @@ Then prove the loop *closes*, which is the part a local-only setup can never do:
 - Restore the rig (`rig up <rig> --existing`) and confirm the seat comes back with its queue intact
   ([chapter 14.7](14-keeping-the-fleet-alive.md)).
 
-## 16.6 Hosting and status
+## 18.6 Hosting and status
 
 - **Managed or self-hosted.** You can run on the managed deployment, or bring the same stack up
   yourself — the deployment definitions are in the repository.
 - Expect the platform to be moving. Treat the dashboard's own claims the way
-  [chapter 13.7](13-safety-and-security.md) tells you to treat a seat's claims: verify drift, running
+  [chapter 9.7](09-safety-and-security.md) tells you to treat a seat's claims: verify drift, running
   state and resolved configuration against the machine rather than trusting a green pill.
 - **Not verified in this guide.** The overlay merge semantics when the
   same module is touched at two scopes, and how drift is computed are all outside what has been
   measured here. Read them from the product, and check `rig --help` and the product's own
   documentation for your version over anything in this chapter.
 
-You have finished the guide. Return to the [README](../README.md) for the index.
+Next: [chapter 19 — the recipe for a new project](19-recipe-new-project.md).

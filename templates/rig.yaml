@@ -8,7 +8,7 @@ summary: >
   Two Claude Code seats working in one repository: an owner and an independent checker.
 
 culture_file: CULTURE.md           # relative to this file; read by each seat at launch
-permission_policy: builtin:yolo    # OPTIONAL: Claude launches with --dangerously-skip-permissions. Read docs/13 first.
+permission_policy: builtin:yolo    # OPTIONAL: Claude launches with --dangerously-skip-permissions. Read docs/09 first.
                                    # Remove this line for the safer default (--permission-mode acceptEdits).
 
 pods:

@@ -1,6 +1,6 @@
 # 14. Keeping the fleet alive
 
-Chapters 8–10 make a team run for hours without you. They watch **work**: the queue, the ledger,
+Chapters 10–12 make a team run for hours without you. They watch **work**: the queue, the ledger,
 reminders, the token budget. None of them watches whether the team still **exists**.
 
 That is a real gap, and it bit a production run twice. On 2026-10-05 the tmux server holding all ten
@@ -118,7 +118,7 @@ The daemon passes no `-S`/`-L` socket selector on any of its tmux calls, so **al
 default tmux server**. One event that empties it ends the fleet for *every* team on the machine, not
 just the one that caused it.
 
-- If your seats run under **herdr** instead, they are unaffected by a tmux server death (chapter 12).
+- If your seats run under **herdr** instead, they are unaffected by a tmux server death (chapter 23).
 - Giving each rig its own socket (`tmux -S`/`-L` per rig) would make a server-scale event cost one
   rig. That is an upstream OpenRig change, not a config knob — until then, treat one machine's tmux
   server as shared fate for every team on it.
@@ -131,7 +131,7 @@ rig up <rig> --existing        # restore from snapshot; each seat resumes its ow
 
 It reported `fully_restored` with all ten seats `resumed` on their own session files — **no
 `rig down` first**. Reach for `rig down <rig> --snapshot` only if you get the HTTP 409 "has live
-sessions" refusal (chapter 12).
+sessions" refusal (chapter 23).
 
 Why it is cheap: a seat's *position* (rig spec, edges, policy) and its *conversation* (session file)
 both live on disk, so nothing has to be reconstructed. What you lose is the elapsed time, not the
@@ -152,4 +152,4 @@ tail -3 ~/.openrig/logs/rig-watchdog.log     # is the heartbeat current?
   watchdog policy engine, but no liveness policy in it as of 0.6.4. Until then, start the script
   again after each boot.
 
-Next: [chapter 15 — the architecture we actually run](15-architecture-seat-model-and-cloud.md).
+Next: [chapter 15 — the seat model and the cloud split](15-architecture-seat-model-and-cloud.md).

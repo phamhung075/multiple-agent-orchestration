@@ -1,11 +1,11 @@
-# 17. A supervisor that compacts the seats for you
+# 13. A supervisor that compacts the seats for you
 
-Chapter 10 asks each seat to schedule its own `/compact`. In a long run that rule fails quietly:
+Chapter 12 asks each seat to schedule its own `/compact`. In a long run that rule fails quietly:
 seats forget it, a seat that is mid-task cannot act on it, and a seat that never finishes a turn
 never compacts. The fix is to move the job out of the seats into **one supervisor process per
 room**. The seats stay unaware; the supervisor watches and acts.
 
-## 17.1 What the supervisor does
+## 13.1 What the supervisor does
 
 Each pass, for every seat in the room it supervises:
 
@@ -27,7 +27,7 @@ Each pass, for every seat in the room it supervises:
 2026-.. lead: told to resume
 ```
 
-## 17.2 Two thresholds, not one
+## 13.2 Two thresholds, not one
 
 | Threshold | Meaning | Behaviour |
 |---|---|---|
@@ -39,7 +39,7 @@ whole task; the ceiling should sit well below the window so a compaction request
 The reason to have both: the safe point keeps the average context small, which is where the savings
 are, and the ceiling is the net for a seat that never goes quiet.
 
-## 17.3 Rules that keep it safe
+## 13.3 Rules that keep it safe
 
 - **Only compact seats that are idle-ish.** Never during a build, a test run or a pending offload.
 - **One supervisor per room, one writer per seat.** Two supervisors sending `/compact` to the same
@@ -52,10 +52,10 @@ are, and the ceiling is the net for a seat that never goes quiet.
 - **Log every action** with the before and after numbers. A supervisor you cannot audit will be
   switched off the first time it surprises someone.
 
-## 17.4 Running several rooms
+## 13.4 Running several rooms
 
 Each room gets its own supervisor process, started with the room's name. They do not share state, so
-a second room (for instance an experiment room, chapter 19) never needs the first to be stopped.
+a second room (for instance an experiment room, chapter 21) never needs the first to be stopped.
 Check the processes and their logs:
 
 ```bash
@@ -66,16 +66,16 @@ tail -n 5 logs/compact-<room>.log   # the last actions, with before/after sizes
 A room whose log shows only the "supervising" line is not broken: its seats have not reached the
 safe point yet.
 
-## 17.5 Runtimes without a usable size
+## 13.5 Runtimes without a usable size
 
 The supervisor needs a context number. A runtime that does not report one (or reports it in a form
-you cannot read) cannot be supervised this way; give those seats the chapter 10 rule instead, and
+you cannot read) cannot be supervised this way; give those seats the chapter 12 rule instead, and
 keep the sessions short. Do not guess a size from elapsed time.
 
-## 17.6 Check
+## 13.6 Check
 
 - The log shows `WITNESSED` lines with a drop, not just `sent`.
 - No seat's context stays above the hard ceiling for more than one pass.
 - After a compaction the seat's first action is to re-read its identity and notes.
 
-Next: [chapter 18 — bootstrapping a room without the usual traps](18-room-bootstrap-traps.md).
+Next: [chapter 14 — keeping the fleet alive](14-keeping-the-fleet-alive.md).

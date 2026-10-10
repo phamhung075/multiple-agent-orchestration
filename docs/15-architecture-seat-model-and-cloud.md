@@ -44,7 +44,7 @@ rather than data loss — restoring from a snapshot lets each seat resume its ow
 
 It is also the forensic record: the daemon's `events` table is the authoritative timeline of anything
 that happened to a seat, and it will out-explain any log file you keep
-([chapter 12](12-troubleshooting.md)).
+([chapter 23](23-troubleshooting.md)).
 
 ## 15.3 What a seat is: a position and an occupant
 
@@ -157,7 +157,7 @@ next sync recreates it.
 Note what is *not* in it: no cloud, no credentials, no prompts. The spec describes **positions**. The
 behaviour lives in the role files, and the work lives in the ledger.
 
-## 15.9 What this changes about chapters 1–11
+## 15.9 What this changes about chapters 1–12
 
 Read these as corrections, not footnotes:
 
@@ -179,4 +179,4 @@ Read these as corrections, not footnotes:
 - Whether an occupant swap preserves an in-flight turn. It is usually documented as switching runtime
   and model; assume it wants a turn boundary until you have measured it.
 
-Next: [chapter 16 — completing the system](16-completing-the-system-the-brain.md).
+Next: [chapter 16 — a standalone client for any project](16-a-standalone-client-for-any-project.md).
