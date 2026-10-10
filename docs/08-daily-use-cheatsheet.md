@@ -54,6 +54,8 @@ this is the one thing the local tools cannot tell you ([chapter 18.3](18-complet
 | Goal | Command |
 |---|---|
 | Message one seat | `rig send <seat> "text"` |
+| Message one seat, signed (4genthub client) | `4genteam send --from lead <rig> <seat> "text"` |
+| Restart live seats when each is quiet (4genthub client) | `4genteam seat reseat <rig> --seat a --seat b` |
 | Message a pod or rig | `rig send --pod dev "text"` · `rig send --rig <rig> "text"` |
 | Raw keystrokes (no envelope) | `rig send --raw <seat> "/compact"` |
 | Wait for idle first | `rig send <seat> "text" --wait-for-idle 600` |

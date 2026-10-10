@@ -48,6 +48,17 @@ before retrying.
 ### Seat is `idle` after `rig send`
 The message sits unsubmitted in the input box. → `tmux send-keys -t '<seat>' Enter`.
 
+### A seat ignores a skill or guide that the client says it delivered
+Symptom: `4genteam sync rig` copied the new skill into the seat's agent directory, `seat sync` says
+"all seats in sync", and the seat still works the old way. Its shell may also sit in a deleted directory
+(`ls -l /proc/<pid>/cwd` ends in `(deleted)`), because `sync rig` replaces the rig directory.
+Cause **(verified 2026-10-11)**: a seat reads its skills and guide once, at launch. `seat sync
+--relaunch quiet` restarts only seats whose snapshot changed, and here the snapshot was already
+adopted. `rig launch` on a live seat does nothing.
+→ `4genteam seat reseat <rig> --seat a --seat b`. It waits until each seat is quiet, restarts it, and
+goes on to the next. Start with the idle seats. If `rig launch` answers "did not respond in time", the
+launch usually still lands: look at `rig ps --nodes --rig <rig>` before you repeat anything.
+
 ### Seat is `needs-input`, reason `selection_prompt`
 A permission prompt or picker is waiting. `rig capture <seat> --lines 30` shows it. Approve plain
 "Yes" for read-only commands you understand. Avoid "don't ask again" unless you mean it. Seats on
