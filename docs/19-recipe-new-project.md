@@ -54,6 +54,12 @@ rig send <seat>@my-team "Do one small task. Track it on the queue."
 **Check:** the seat answers, and the task and the verdict both appear on the queue
 (`rig queue list`).
 
+From here on, start and restore the team only through the client: `4genteam up <rig>`. It starts
+the daemon, the seats, the status bridge, the compaction supervisor and the watch view, and it
+refuses to start DeepSeek seats at peak hours. Starting a room with `rig up` by hand skips the
+supervisor and the watchdog, and nothing tells you. In the 4genthub project this is a rule: the
+client must check that every required service is running before it reports success.
+
 ## 19.4 Give the team a mission that survives a restart
 
 Write `CULTURE.md` from `templates/CULTURE.md`: what the job is, how to behave, how to finish
