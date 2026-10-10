@@ -100,6 +100,13 @@ size.
 **Check:** `scripts/rig-watchdog.sh --check` reports a healthy fleet. Stop one seat on purpose and
 confirm the watchdog notices.
 
+In the 4genthub project the client is also getting an optional auto-fix. It is off by default. When
+the client finds an anomaly (a required service stopped, seats gone, a seat past its context limit)
+it runs `claude -p` with permissions bypassed, with a fixed repair prompt, to restore the session.
+It writes a log of the anomaly, the command, the output and a re-check afterwards, and it stops and
+alerts you after a set number of failed attempts. This is the riskiest posture in chapter 9, so keep
+the repair prompt narrow. It is not built yet.
+
 ## 19.8 Scale to the real team
 
 Replace the two seats with the seats your project needs. Keep the number small. The 4genthub team
