@@ -9,7 +9,7 @@ chapters 1–14. In the cloud, a **brain** holds the state for orchestration: ro
 tasks, and the resolved state the client reports — that is chapters 15–16.
 
 The early chapters teach the simplest form that works (a couple of seats, work offloaded to a cheap
-model as a tool call). Chapters 14–16 are what the same system looked like after months of real use:
+model as a tool call). Chapters 14–20 are what the same system looked like after months of real use:
 liveness monitoring, a seat model with swappable occupants, and the cloud brain that completes it.
 [Chapter 15.9](docs/15-architecture-seat-model-and-cloud.md) lists exactly what changed, so you can
 read the early chapters without being misled by them.
@@ -75,6 +75,10 @@ architecture it converges into.
 | 14 | [docs/14-keeping-the-fleet-alive.md](docs/14-keeping-the-fleet-alive.md) | Liveness vs activity: notice a dead fleet, heartbeat the watchdog, recover in a minute |
 | 15 | [docs/15-architecture-seat-model-and-cloud.md](docs/15-architecture-seat-model-and-cloud.md) | Where this converges: position vs occupant, seat types you own, and the cloud/client split |
 | 16 | [docs/16-completing-the-system-the-brain.md](docs/16-completing-the-system-the-brain.md) | Runbook: add the cloud brain (4genthub) to complete the system |
+| 17 | [docs/17-self-compaction-supervisor.md](docs/17-self-compaction-supervisor.md) | A supervisor per room that compacts idle seats and verifies the drop |
+| 18 | [docs/18-room-bootstrap-traps.md](docs/18-room-bootstrap-traps.md) | The four traps of a new room (key, working directory, policy, first launch) and the client that removes them |
+| 19 | [docs/19-ab-room-for-guide-variants.md](docs/19-ab-room-for-guide-variants.md) | An A/B room beside production: pick seat instructions by quality per cost |
+| 20 | [docs/20-working-agreements-shared-repo.md](docs/20-working-agreements-shared-repo.md) | Pathspec commits, one changelog file per change, small docs, a plain writing rule, pinned guides |
 | – | [SOURCES.md](SOURCES.md) | Every source, repo, package and path this guide relies on |
 
 Ready-to-copy files:
