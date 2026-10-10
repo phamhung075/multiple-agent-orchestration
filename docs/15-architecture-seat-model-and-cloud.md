@@ -76,13 +76,13 @@ Three levels, and keeping them apart is the whole point:
 | Level | What it is | Example |
 |---|---|---|
 | **Room** | the workspace that holds seats | `my-room` |
-| **Seat** | a named position in that room — **the key is yours to choose** | `go-dev`, `web-dev`, `architect` |
+| **Seat** | a named position in that room — **the key is yours to choose** | `go-dev`, `fe-dev`, `architect` |
 | **Seat type** | the reusable behaviour that seat points at, pinned to a version | `developer`, `architect` |
 
-**The seat key and the seat type are different things.** Two seats — `go-dev` and `web-dev` — can
+**The seat key and the seat type are different things.** Two seats — `go-dev` and `fe-dev` — can
 point at the *same* seat type and differ only in their name, their role file and their queue. The key
 is custom; the type is shared. That is what lets a project name its seats after its own work
-(`go-dev`, `skills-dev`, `feedback-dev`) without inventing a new behavioural type for each one.
+(`go-dev`, `fe-dev`, `reviewer`) without inventing a new behavioural type for each one.
 
 **Seat types are not a fixed list.** A well-built cloud ships a small *seed set* — a handful of
 general roles like implementer, reviewer, planner, researcher, writer — and then treats the set as
@@ -147,6 +147,13 @@ runtime, one model, one pod, a lead with `delegates_to` and `escalates_to` edges
 and `collaborates_with` edges between peers. Copy it, change the seat keys, and point the agent
 references at your own role directories.
 
+A ten-seat pod is not a goal. The 4genthub team in the case study was later cut to **five seats**
+(lead, architect, go-dev, fe-dev, reviewer) to focus on one document. Seats that only kept docs
+and skills true were removed, and that upkeep moved into the dev seats' own commits. Remove a seat
+with `rig remove <rigId> <logicalId> --fallback <session>`: it takes the rig **ID** and the node's
+**logical ID** (`<rig>.<seat>`), not the rig name. Also delete the seat from the team spec, or the
+next sync recreates it.
+
 Note what is *not* in it: no cloud, no credentials, no prompts. The spec describes **positions**. The
 behaviour lives in the role files, and the work lives in the ledger.
 
@@ -160,7 +167,7 @@ Read these as corrections, not footnotes:
 | Owner + checker, fanning out to workers | A **pod of ~10 seats** with an explicit lead and reviewer | Coordination moves into the topology (edges) instead of into prompts |
 | A **config-injection proxy** because only the principal session has tool access | Every seat receives its own role file and reaches shared tools itself | The proxy was a workaround for a limitation that no longer exists |
 | A large **template library** to look agents up | **Versioned seat types** you own, plus a seat key you choose | Templates duplicated what the role file should say once |
-| Seats named from a fixed list of roles | **Seat keys are yours** (`go-dev`, `skills-dev`) pointing at a shared type | The seat name should describe its work, not its place in a taxonomy |
+| Seats named from a fixed list of roles | **Seat keys are yours** (`go-dev`, `fe-dev`) pointing at a shared type | The seat name should describe its work, not its place in a taxonomy |
 | Scale by adding seats | Scale by **swapping occupants** — keep the position, change the brain | Positions carry the queue, the edges and the history; a new occupant inherits all of it |
 
 ## 15.10 Not verified

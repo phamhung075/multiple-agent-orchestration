@@ -56,6 +56,9 @@ it.
 Sign up, then mint an API token with the scopes you need.
 
 - Give the client only the scopes it uses. This token is what your machine presents when it pulls.
+- To publish a local session to the dashboard the token needs the `sessions:write` scope. It is
+  **not** part of "Full Access"; tick it by hand. Without it the server accepts the connection and
+  closes it with code 1008, and the Sessions page stays empty.
 - **Plan the rotation now, not later.** If seats read the token from their inherited environment at
   call time, rotating it is not a config edit: it needs the config, the daemon, the terminal
   server's environment, and then a reseat. A config-only rotation leaves every live seat on the old
@@ -68,7 +71,7 @@ Sign up, then mint an API token with the scopes you need.
 Create rooms and seats from the dashboard:
 
 1. Start from the **built-in seat types** rather than inventing each seat from scratch.
-2. Give each seat a **key that describes its work** — `go-dev`, `web-dev`, `skills-dev` — not a
+2. Give each seat a **key that describes its work** — `go-dev`, `fe-dev`, `reviewer` — not a
    generic role name. The key is yours; the type is shared.
 3. Use **overlays** (company, room, seat) to add, remove, override or pin modules, so one seat type
    can serve several teams without being edited.
@@ -107,6 +110,19 @@ Drift is the word to watch. It is the difference between what the brain says a s
 what the seat resolved to — a stale role file, an occupant that did not change, a pinned policy that
 did not render. A seat that looks healthy locally can still be drifted; the dashboard is where that
 becomes visible.
+
+The Sessions page lists only sessions a client has sent. Put the token in the client's one env file
+(`~/.config/4genthub/.env`: the server URL and the token), then send a session:
+
+```bash
+4genteam sync connector --session <rig-session-name>     # add --lines N to change the 50 default
+```
+
+The client redacts secrets locally, then dials **out** to the server over a WebSocket; the server
+never connects into your machine. Today this sends one session once and exits. A background client
+that keeps every local session live and reconnects by itself (planned as an always-on local
+daemon, upstream events first, then commands from the cloud run locally) and messages from the
+browser to a seat are **not available yet**.
 
 **Check:** the dashboard shows the seats you launched, and drift is empty. If it is not, treat the
 drift as the bug — not the dashboard.
@@ -156,7 +172,7 @@ Then prove the loop *closes*, which is the part a local-only setup can never do:
 - Expect the platform to be moving. Treat the dashboard's own claims the way
   [chapter 13.7](13-safety-and-security.md) tells you to treat a seat's claims: verify drift, running
   state and resolved configuration against the machine rather than trusting a green pill.
-- **Not verified in this guide.** The exact token scope names, the overlay merge semantics when the
+- **Not verified in this guide.** The overlay merge semantics when the
   same module is touched at two scopes, and how drift is computed are all outside what has been
   measured here. Read them from the product, and check `rig --help` and the product's own
   documentation for your version over anything in this chapter.

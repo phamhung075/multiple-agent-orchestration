@@ -85,6 +85,10 @@ a command receives.
 
 ## Language of the client
 
+The case-study client was ported this way: it is now the Go binary `4genteam`
+(`sync`, `up`, `compact`, `watch`, `team`, `policy`), and the server it pairs with has no Python
+backend left. Only the hooks client of the server's repository still needs Python.
+
 A client mixes three kinds of work, and the right language differs:
 
 | Work | Fits |

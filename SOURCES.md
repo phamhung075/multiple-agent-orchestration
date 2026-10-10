@@ -53,7 +53,7 @@ matches your installed CLI.
 
 | Item | Source |
 |---|---|
-| Python server (`fastmcp` package, FastAPI + SQLAlchemy + Keycloak) | `4genthub/agenthub_main/src/fastmcp` |
+| Python server (`fastmcp` package, FastAPI + SQLAlchemy + Keycloak), replaced by the Go port; the source of the case study | `4genthub/agenthub_main/src/fastmcp` |
 | Go port | `4genthub/agenthub_go` (ledger: `MIGRATION.md`) |
 | Team spec and culture | `4genthub/rig.yaml`, `4genthub/CULTURE.md` |
 | Remote | `git@github.com:phamhung075/4genthub.git` |

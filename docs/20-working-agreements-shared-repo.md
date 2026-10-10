@@ -45,6 +45,9 @@ page misleads on every task.
 - Merge overlapping pages into one. A fact should have one home.
 - Put the rule "small docs, updated in place" in the guide of the seat that writes docs, and let the
   lead decide when a doc deserves to exist.
+- **Batch documentation commits.** One docs commit per work item, never one per finding. Fold the
+  doc and changelog updates for an item into the commit that carries its code; keep a docs-only
+  commit for records with no code change. Otherwise the history reads as nothing but docs.
 
 ## 20.4 A writing rule for the seats
 
