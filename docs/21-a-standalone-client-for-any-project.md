@@ -6,6 +6,18 @@ copy or depend on that repository, and the tooling grows hidden assumptions abou
 
 This chapter describes how to keep the client separate.
 
+## Three parts, three jobs
+
+| Part | Job | Runs |
+|---|---|---|
+| The server (the brain) | Holds projects, tasks, context, the room and seat definitions, and the MCP tools. It never runs a model. | hosted |
+| The orchestrator (the workplace) | Starts and keeps the seats, which are model processes in terminal sessions, and carries messages between them. It knows nothing about the server. | on each machine |
+| The client (the connector) | Pulls a room's definition from the server and turns it into something the orchestrator runs; reports seat status back; keeps contexts small; delivers skills; shows the grid. | on each machine |
+
+A seat reaches the brain through the server's MCP endpoint. Because the client depends on neither
+the server's repository nor one team's definition, it works with any orchestrator team, not only the
+rooms of one server.
+
 ## The rule
 
 The client is its own repository with these properties:
@@ -32,6 +44,20 @@ The client is its own repository with these properties:
 ```
 
 The token never appears in the file.
+
+- **One credential, one env file.** The client reads a single user key and a server URL from one
+  `.env` in its own directory; a variable already in the environment wins. Do not add a second
+  machine-level key or a second env file for a service: the machine identity is data in the request
+  body, not a credential.
+- **One skills tree.** Skills live in the client as `skills/share/<skill>` (every room),
+  `skills/rooms/<room>/<skill>` (every seat of one room), `skills/rooms/<room>/<seat>/<skill>` (one
+  seat) and `skills/client/<skill>` (for a model that runs the client itself). A directory holding a
+  `SKILL.md` is a skill; one without it is a seat folder. A seat receives the shared skills, its
+  room's and its own, and the client asks the user for each agent's skills path.
+- **A cost gate belongs in the client.** If a provider bills less at certain hours, the check is a
+  client command with the schedule in UTC, a setting to switch it on or off, and an explicit flag to
+  override it for one run. Starting or resuming seats at the expensive hours is refused with the next
+  cheap time, not silently allowed.
 
 ## How to get there from a client that started inside a project
 
@@ -63,11 +89,21 @@ A client mixes three kinds of work, and the right language differs:
 
 | Work | Fits |
 |---|---|
-| Orchestration glue: parse arguments, call HTTP and the orchestrator, write files | any; Python is fastest to change |
-| A helper that must be small, fast and never stall (watching terminal output, sending keys) | Rust or Go |
+| Orchestration glue: parse arguments, call HTTP and the orchestrator, write files | Go |
+| A helper that must be small, fast and never stall (watching terminal output, sending keys, forcing a compaction through the runtime's RPC) | Rust, called by the Go client |
 | A single static binary to install on a machine without a runtime | Go or Rust |
 
-Porting is worth it when installation friction matters more than change speed. Port one command at a
-time behind one shared command contract, and have an unported command refuse with an explicit error
-rather than do something weaker. Keep the reference implementation until the port passes the same
-cases.
+One language for the client, with Rust only for small helpers, removes the install step of a
+language runtime and the second implementation to keep in step. The port is worth it when
+installation friction matters more than change speed, and it is done in phases:
+
+1. Move the client to its own module with no import from another repository.
+2. Port the long-running parts first (the lifecycle and the compaction supervisor), then the team
+   commands, the watch view and the sync verbs, behind one shared command contract. An unported
+   command refuses with an explicit error rather than do something weaker.
+3. Keep the old implementation until the new one passes the same cases.
+4. Delete the old implementation last, and only when all of these hold: every command is in the new
+   binary (the help output of both diffed), each old test has an equivalent or a recorded reason, a
+   clean clone builds and passes its tests with no old runtime installed, and a reviewer signs off.
+   Then point the command on the machine's `PATH` at the new binary and stop the old processes, or
+   two supervisors will send to the same seat.

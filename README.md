@@ -79,6 +79,7 @@ architecture it converges into.
 | 18 | [docs/18-room-bootstrap-traps.md](docs/18-room-bootstrap-traps.md) | The four traps of a new room (key, working directory, policy, first launch) and the client that removes them |
 | 19 | [docs/19-ab-room-for-guide-variants.md](docs/19-ab-room-for-guide-variants.md) | An A/B room beside production: pick seat instructions by quality per cost |
 | 20 | [docs/20-working-agreements-shared-repo.md](docs/20-working-agreements-shared-repo.md) | Pathspec commits, one changelog file per change, small docs, a plain writing rule, pinned guides |
+| 21 | [docs/21-a-standalone-client-for-any-project.md](docs/21-a-standalone-client-for-any-project.md) | The brain, the workplace and the connector; one credential; one skills tree; a cost gate; a one-language client |
 | – | [SOURCES.md](SOURCES.md) | Every source, repo, package and path this guide relies on |
 
 Ready-to-copy files:
