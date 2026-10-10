@@ -60,7 +60,7 @@ Check the processes and their logs:
 
 ```bash
 pgrep -af 'compact.*--rig'          # one line per supervised room
-tail -n 5 logs/compact-<room>.log   # the last actions, with before/after sizes
+4genteam log <room>                  # follow the log; the file is under ~/.local/state/4genthub/logs/
 ```
 
 A room whose log shows only the "supervising" line is not broken: its seats have not reached the
