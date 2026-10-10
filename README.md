@@ -102,7 +102,8 @@ rig ps --nodes --rig my-team         # 5. watch it work
 
 Then read chapters 8–10 to make the team run for hours without you, [chapter 14](docs/14-keeping-the-fleet-alive.md)
 to keep it alive while you are not looking, and [chapter 16](docs/16-completing-the-system-the-brain.md)
-to add the cloud brain.
+to add the cloud brain, and [chapter 21](docs/21-a-standalone-client-for-any-project.md) to keep the
+machine-side client separate from every project.
 
 ## Honesty notes
 
