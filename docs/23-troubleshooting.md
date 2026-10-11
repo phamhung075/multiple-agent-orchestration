@@ -52,11 +52,13 @@ The message sits unsubmitted in the input box. → `tmux send-keys -t '<seat>' E
 Symptom: `4genteam sync rig` copied the new skill into the seat's agent directory, `seat sync` says
 "all seats in sync", and the seat still works the old way. Its shell may also sit in a deleted directory
 (`ls -l /proc/<pid>/cwd` ends in `(deleted)`), because `sync rig` replaces the rig directory.
-Cause **(verified 2026-10-11)**: a seat reads its skills and guide once, at launch. `seat sync
---relaunch quiet` restarts only seats whose snapshot changed, and here the snapshot was already
-adopted. `rig launch` on a live seat does nothing.
-→ `4genteam seat reseat <rig> --seat a --seat b`. It waits until each seat is quiet, restarts it, and
-goes on to the next. Start with the idle seats. If `rig launch` answers "did not respond in time", the
+Cause **(verified 2026-10-11)**: two separate gaps. First, a seat reads its skills once, at launch, and
+`seat sync --relaunch quiet` restarts only seats whose snapshot changed. Second, an omp seat reads skills
+from its own agent directory, `~/.openrig/state/omp/<seat session>/agent/skills`, and nothing copied the
+files `sync rig` built (`<room>/rig/agents/<seat>/skills`) into it. A restarted seat answered "No such
+skill" while the skill sat in the store. `rig launch` on a live seat does nothing.
+→ `4genteam seat reseat <rig> --seat a --seat b`. It copies the store skills into the seat's own directory (replacing what was there), waits until each
+seat is quiet (`--force` skips the wait), restarts it, and goes on to the next. Start with the idle seats. If `rig launch` answers "did not respond in time", the
 launch usually still lands: look at `rig ps --nodes --rig <rig>` before you repeat anything.
 
 ### Seat is `needs-input`, reason `selection_prompt`
