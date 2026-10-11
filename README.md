@@ -53,6 +53,8 @@ nodes:
 
 ## 🏗️ Architecture: The 3-Tier Model
 
+![Multi-Agent Orchestration Architecture: Cloud Brain, 4genteam Client, OpenRig Daemon](demo2.png)
+
 ```
 [ Tier 1: Cloud Brain ]
    4genthub (Web UI & MCP Server)
