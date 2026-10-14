@@ -13,14 +13,24 @@ Stream tool calls, agent reasoning, and outputs across all seats into a single t
 ```bash
 4genteam feed --rig <rig-name> --detail
 ```
-* **Real-time Color Coding:**
-  - Blue: Read/Grep/Search tools
-  - Yellow: Write/Edit tools
-  - Green: Shell commands (`bash`, `eval`)
-  - Magenta: MCP protocol tool invocations
-  - Red: Blocked calls or tool errors
+* **A glyph and colour per kind of tool**, so the feed reads by shape:
+
+  | Glyph | Kind | Colour |
+  |---|---|---|
+  | `◉` | read, ls | blue |
+  | `⌕` | grep, find, glob, search | cyan |
+  | `✎` | write, edit | yellow |
+  | `❯` | shell (`bash`, `eval`) | green |
+  | `⌁` | web search, fetch, browser | blue |
+  | `⇉` | delegate, todo | violet |
+  | `?` | ask | orange |
+  | `⬡` | MCP tool, shown as `mcp <server_tool>` | magenta |
+  | `→` | anything else | white |
+
+* **Purpose first, argument below.** A call's head carries the purpose the seat stated for it (dim italic); the command, path or request follows on the lines below, with no `key=` noise. Results are headed by the tool that answered (`← bash`), and errors are red (`✗ bash`).
+* **Runtime events in orange.** What the runtime injects into a seat itself is marked apart from the seat's own work: `HOOK <name>` for a reminder or notice (system tags removed, three lines at most), `RULE` for an injected rule, `EXIT` for the end of a session. A call the seat's own policy refused is a white-on-red `BLOCKED`.
 * **Word Wrapping:** Full tool commands and messages wrap cleanly with indentation.
-* **Token Meters:** Displays current context tokens and distance to the next compaction threshold.
+* **Token Meters:** Every line carries the context percentage, so the meter never scrolls out of view.
 
 ### B. Single-Seat Observation
 Follow only one seat (e.g. the lead):
@@ -30,7 +40,9 @@ Follow only one seat (e.g. the lead):
 
 ### C. The Multi-Pane Interactive Grid (`4genteam watch`)
 Opens a tiled workspace using `herdr` showing:
-- One pane per active seat
+- One pane per active seat, titled with the seat, its model and a context bar:
+  `== lead | deepseek-flash ==  ███████████████░ 91% 137k/150k to compact`
+  (the title is renamed as the reading moves, at most every 5 seconds, so the stream itself carries no header line)
 - A dedicated lead terminal window on top
 - Direct input panels underneath each seat for operator intervention
 
@@ -50,5 +62,7 @@ Opens a tiled workspace using `herdr` showing:
 | `--back N` | `40` | Number of historical events to display on startup |
 
 ---
+
+A running pane keeps the binary it started with: after updating `4genteam`, run `4genteam watch --rig <rig-name>` again to rebuild the panes.
 
 Next: [02 — Token Economy & Self-Compaction](02-self-compaction.md)

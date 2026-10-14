@@ -39,7 +39,17 @@ The essential commands to operate, monitor, and steer your agent team every day.
 | **View specific task detail** | `rig queue show <qitem-id>` |
 | **Check blocked / parked items** | `rig queue list --filter state=blocked` |
 
-## 5. Maintenance & Token Compaction
+## 5. Decisions & Closing Work
+
+| Goal | Command |
+|---|---|
+| **Ask Jev before asking the lead or owner** | `4genteam decide --tier seat --summary '<subject>' --detail-file detail.txt --questions-file q.json` |
+| **Close a task through the gate** | `4genteam complete --task <id> --base <sha> --summary '<what changed>' --test '<test command>'` |
+| **Read what Jev decided** | `tail ~/.config/4genthub/jev_decisions.log` |
+
+See [05 — Jev: Decisions and Task Gates](../03-production-performance/05-jev-decisions.md).
+
+## 6. Maintenance & Token Compaction
 
 | Goal | Command |
 |---|---|

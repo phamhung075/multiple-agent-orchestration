@@ -58,4 +58,4 @@ When the lead needs a decision from the owner, it presents a concise, 3-bullet d
 
 ---
 
-Next: [Recipes & Playbooks: Modern New Project Recipe](../04-reference-and-playbooks/new-project-recipe.md)
+Next: [05 — Jev: Decisions and Task Gates](05-jev-decisions.md)

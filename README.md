@@ -66,6 +66,7 @@ nodes:
    4genteam (Unified CLI & Background Services)
       - Provisions isolated git worktrees per seat (wt/<seat>)
       - Runs token compaction supervisor and live terminal feeds
+      - Runs Jev locally: seats ask it for decisions and close tasks through its gate
              │
              ▼ Local Sockets
 [ Tier 3: Local Orchestrator ]
@@ -92,10 +93,11 @@ The documentation is organized into four clear stages:
 * [04. Safety & Guardrails](docs/02-architecture-and-mental-model/04-safety-and-guardrails.md) — The Git Guard contract and push bans.
 
 ### [3. Production Performance](docs/03-production-performance/01-live-monitoring-watch.md)
-* [01. Live Monitoring & Watch](docs/03-production-performance/01-live-monitoring-watch.md) — Real-time terminal feeds and multi-pane grids.
+* [01. Live Monitoring & Watch](docs/03-production-performance/01-live-monitoring-watch.md) — Real-time terminal feeds, per-tool glyphs and multi-pane grids with a status title per seat.
 * [02. Self-Compaction](docs/03-production-performance/02-self-compaction.md) — Automated context supervisor preventing context blowups.
 * [03. Cheap Worker Offload](docs/03-production-performance/03-deepseek-offload.md) — DeepSeek background workers and off-peak gates.
 * [04. Self-Improving Team](docs/03-production-performance/04-self-improving-team.md) — The seat friction loop and the Autonomy Charter.
+* [05. Jev: Decisions and Task Gates](docs/03-production-performance/05-jev-decisions.md) — The seat/lead/owner decision ladder and the task-completion gate.
 
 ### [4. Playbooks & Reference](docs/04-reference-and-playbooks/new-project-recipe.md)
 * [New Project Recipe](docs/04-reference-and-playbooks/new-project-recipe.md) — End-to-end checklist for adding the stack to any project.

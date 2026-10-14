@@ -7,6 +7,7 @@ Every component used in this orchestration stack, its role, upstream source, and
 | Component | What it is | Source / Repo | Role in Fleet |
 |---|---|---|---|
 | **4genthub Client** (`4genteam`) | Unified CLI client for rooms, git worktrees, watch views, and supervisor | https://github.com/phamhung075/4genthub-client | Starts the stack, provisions worktrees, runs token compaction supervisor, formats live feeds |
+| **Jev** (judge model `jev-1.13.0`) | Decision and task-gate judge, called from the client with `TYPESAFE_API_KEY` | TypeSafe API (`TYPESAFE_BASE_URL`) | Answers `4genteam decide` and gates `4genteam complete`; every outcome is logged locally |
 | **OpenRig** (`rig`) | Background daemon: seat lifecycle, message transport, durable queue | https://github.com/mvschwarz/openrig · npm `@openrig/cli` | Manages terminal nodes, hosts the local queue database, routes inter-agent messages |
 | **4genthub** | Cloud platform & web workspace (optional) | https://www.4genthub.com/ | Portfolio management, shared boards, task tracking, and token cost telemetry |
 | **Claude Code** | Anthropic agent CLI runtime | npm `@anthropic-ai/claude-code` | High-capability reasoning, architecture planning, and gate reviews |
@@ -26,7 +27,8 @@ Every component used in this orchestration stack, its role, upstream source, and
   ├── agenthub-seats/<room>/
         └── wt/<seat>/              # Isolated Git worktrees for each active seat
 ~/.config/4genthub/
-  └── .env                          # API credentials (never committed to git)
+  ├── .env                          # API credentials and Jev settings (never committed to git)
+  └── jev_decisions.log             # Append-only log of every Jev decision and gate outcome
 ~/.local/bin/
   ├── 4genteam                      # Unified fleet management binary
   ├── rig                           # OpenRig orchestrator CLI
