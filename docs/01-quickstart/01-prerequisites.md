@@ -10,11 +10,10 @@ Before running your first AI dev team, ensure your machine has the necessary bas
 
 ## 2. Core Toolchain
 
-You need three fundamental system utilities:
+You need these system utilities:
 
 | Tool | Purpose | Install Command |
 |---|---|---|
-| **Node.js 20+** | Runs OpenRig orchestrator and TypeScript tools | `nvm install 20` or via system package manager |
 | **Go 1.22+** | Builds and runs the `4genteam` client | `sudo apt install golang` or from `go.dev` |
 | **tmux & herdr** | Terminal multiplexers for seat workspaces | `sudo apt install tmux` |
 
@@ -25,23 +24,7 @@ You need three fundamental system utilities:
 npm install -g herdr
 ```
 
-## 3. The Orchestrator: OpenRig (`rig`)
-
-OpenRig is the background daemon that manages seats, executes queue handoffs, and routes inter-agent messages.
-
-```bash
-npm install -g @openrig/cli
-rig setup --dry-run
-rig setup
-```
-
-Verify that the OpenRig daemon is running:
-```bash
-rig ps
-```
-*If the daemon is not running:* start it with `rig daemon start`.
-
-## 4. The Unified Client: `4genteam`
+## 3. The Unified Client: `4genteam`
 
 The `4genthub` client (`4genteam`) controls room synchronization, seat worktrees, token monitoring, automated compaction, and live watch feeds.
 
@@ -50,12 +33,15 @@ Install `4genteam` into your local binary path:
 # From the agenthub_client repository:
 go build -o ~/.local/bin/4genteam ./cmd/4genteam
 ```
+The local runtime (`agenthub-runtime`) is built from the same repository's `rust/` directory; `4genteam up` starts it when it is not running.
+
 Verify installation:
 ```bash
 4genteam --help
+4genteam doctor
 ```
 
-## 5. Agent Model Credentials & Runtimes
+## 4. Agent Model Credentials & Runtimes
 
 Each seat is powered by an agent runtime. Authenticate the runtimes you intend to use:
 

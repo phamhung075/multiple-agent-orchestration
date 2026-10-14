@@ -21,7 +21,7 @@ Every active seat gets its own dedicated Git worktree and branch:
 
 ```
 /home/user/project/              <- Shared root repo checkout (main branch, clean)
-  ├── .openrig/agenthub-seats/my-team/
+  ├── ~/.config/4genthub/rooms/my-team/
         ├── wt/lead/             <- Branch: my-team/lead
         ├── wt/architect/        <- Branch: my-team/architect
         ├── wt/fe-dev/           <- Branch: my-team/fe-dev

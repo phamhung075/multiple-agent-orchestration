@@ -10,37 +10,27 @@ Agents work concurrently in isolated Git worktrees, hand off tasks through a dur
 
 ### 1. Install Tooling
 ```bash
-# 1. Orchestrator
-npm install -g @openrig/cli
-rig setup --dry-run && rig setup
-
-# 2. Unified Client
-# (Build from agenthub_client repo into your PATH)
+# The client; it also ships the local runtime (`agenthub-runtime`)
+# (Build from the agenthub_client repo into your PATH)
 go build -o ~/.local/bin/4genteam agenthub_client/cmd/4genteam
 ```
 
-### 2. Define Your Team (`rig.yaml`)
-In any project repository:
-```yaml
-version: "openrig/v1"
-rig: "dev-team"
-
-nodes:
-  - name: dev
-    runtime: claude-code
-    model: claude-3-7-sonnet
-    cwd: "."
-
-  - name: reviewer
-    runtime: claude-code
-    model: claude-3-7-sonnet
-    cwd: "."
+### 2. Define Your Team (`team.json`)
+In a directory of your choice (for example `~/teams/dev-team/`):
+```json
+{
+  "room": { "slug": "dev-team" },
+  "seats": [
+    { "seat_key": "dev",      "seat_type": "developer", "runtime": "claude-code", "model": "sonnet" },
+    { "seat_key": "reviewer", "seat_type": "reviewer",  "runtime": "claude-code", "model": "sonnet" }
+  ]
+}
 ```
 
 ### 3. Launch and Watch
 ```bash
 # Start the team & provision worktrees
-4genteam up dev-team
+4genteam up dev-team --team ~/teams/dev-team
 
 # Send a mission
 4genteam send --from owner dev-team dev 'Write a factorial utility with tests. Record a queue item when done.'
@@ -53,7 +43,7 @@ nodes:
 
 ## 🏗️ Architecture: The 3-Tier Model
 
-![Multi-Agent Orchestration Architecture: Cloud Brain, 4genteam Client, OpenRig Daemon](demo2.png)
+![Multi-Agent Orchestration Architecture: Cloud Brain, 4genteam Client, Local Runtime](demo2.png)
 
 ```
 [ Tier 1: Cloud Brain ]
@@ -69,10 +59,10 @@ nodes:
       - Runs Jev locally: seats ask it for decisions and close tasks through its gate
              │
              ▼ Local Sockets
-[ Tier 3: Local Orchestrator ]
-   OpenRig Daemon + Runtimes (Claude Code, agy, omp, dsh)
-      - Supervises agent sessions in tmux / herdr panes
-      - Keeps persistent queue items (qitems) and routes messages
+[ Tier 3: Local Runtime ]
+   agenthub-runtime (Rust) + agent runtimes (Claude Code, omp, ...)
+      - Runs each seat in a headless PTY; tmux is only a bridge for attaching
+      - Keeps the room's durable queue (queue.sqlite) and routes messages
 ```
 
 ---
@@ -82,7 +72,7 @@ nodes:
 The documentation is organized into four clear stages:
 
 ### [1. Getting Started](docs/01-quickstart/01-prerequisites.md)
-* [01. Prerequisites](docs/01-quickstart/01-prerequisites.md) — Node, Go, OpenRig, and runtime authentication.
+* [01. Prerequisites](docs/01-quickstart/01-prerequisites.md) — Go, tmux, and runtime authentication.
 * [02. Five-Minute Team](docs/01-quickstart/02-five-minute-team.md) — Up and running with a 2-seat team.
 * [03. Daily Operations](docs/01-quickstart/03-daily-operations.md) — Common commands cheat sheet (`up`, `send`, `watch`, `compact`).
 

@@ -6,17 +6,17 @@ A quick reference guide for common issues, symptoms, and their direct resolution
 
 ## 1. Team & Node Launch Issues
 
-### Symptom: `Up failed: unable to determine source type`
-- **Cause:** `rig up` was pointed at a folder instead of a spec file.
-- **Fix:** Specify the file explicitly: `rig up ./rig.yaml`.
+### Symptom: `cannot load team definition from <dir>`
+- **Cause:** `--team` must name the directory that holds `team.json`, and that file needs a `room.slug` and a `seat_key` on every seat.
+- **Fix:** `4genteam up <rig> --team <dir>` with a valid `<dir>/team.json`.
 
-### Symptom: `Rig has live sessions. Stop the rig with 'rig down' before restoring`
-- **Cause:** OpenRig daemon has lingering session locks from a previous session or crash.
-- **Fix:** Run `rig down <rig> --snapshot`, then `rig up <rig> --existing`.
+### Symptom: `up` exits 2 and names seats that are not running
+- **Cause:** The runtime daemon started but a seat would not run.
+- **Fix:** Read the daemon log path printed with the error, then `4genteam room status <rig>`; restart one seat with `4genteam room reseat <rig> <seat>`.
 
 ### Symptom: Seat shows `runtime_error` or missing API key
 - **Cause:** The seat's environment is missing API keys.
-- **Fix:** Check `~/.config/4genthub/.env` or inspect `rig capture <rig>-<seat>@<rig> --lines 20` to see the exact startup error.
+- **Fix:** Check `~/.config/4genthub/.env` or inspect `4genteam capture agenthub--<rig>--<seat> --lines 20` to see the exact startup error.
 
 ---
 
@@ -27,7 +27,7 @@ A quick reference guide for common issues, symptoms, and their direct resolution
 - **Fix:** Send the enter key: `tmux send-keys -t '<session-name>' Enter`.
 
 ### Symptom: Unsigned message warning / `Delivered without sender identity`
-- **Cause:** `rig send` was executed from an unmanaged shell rather than from a seat session.
+- **Cause:** a message was sent from an unmanaged shell rather than from a seat session.
 - **Fix:** Use `4genteam send --from owner <rig> <seat> '<message>'` which injects standard attribution headers.
 
 ---

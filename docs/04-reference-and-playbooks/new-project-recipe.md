@@ -8,52 +8,34 @@ Follow this step-by-step recipe to set up an autonomous, high-performance agent 
 
 1. Verify system dependencies:
    ```bash
-   node -v    # Must be v20+
    go version # Must be 1.22+
    tmux -V    # tmux installed
    ```
-2. Verify OpenRig is active:
-   ```bash
-   rig ps
-   ```
-3. Ensure `4genteam` client is in your `$PATH`:
+2. Ensure `4genteam` client is in your `$PATH`:
    ```bash
    4genteam doctor
    ```
 
 ---
 
-## Phase 2: Project Rig Specification
+## Phase 2: Team Definition
 
-In the root of your target repository (`~/my-repo`), create a team specification `rig.yaml`:
+Create a directory (for example `~/teams/my-team/`) with a `team.json`:
 
-```yaml
-version: "openrig/v1"
-rig: "my-team"
-
-nodes:
-  - name: lead
-    runtime: claude-code
-    model: claude-3-7-sonnet
-    cwd: "."
-    policy: standard
-
-  - name: dev
-    runtime: claude-code
-    model: claude-3-7-sonnet
-    cwd: "."
-    policy: standard
-
-  - name: reviewer
-    runtime: claude-code
-    model: claude-3-7-sonnet
-    cwd: "."
-    policy: standard
+```json
+{
+  "room": { "slug": "my-team", "cwd": "~/my-repo" },
+  "seats": [
+    { "seat_key": "lead",     "seat_type": "lead",      "runtime": "claude-code", "model": "sonnet" },
+    { "seat_key": "dev",      "seat_type": "developer", "runtime": "claude-code", "model": "sonnet" },
+    { "seat_key": "reviewer", "seat_type": "reviewer",  "runtime": "claude-code", "model": "sonnet" }
+  ]
+}
 ```
 
 ---
 
-## Phase 3: Provision Worktrees & Safety Rails
+## Phase 3: Worktrees & Safety Rails
 
 Run `4genteam` to provision isolated git worktrees for each seat:
 
@@ -62,7 +44,7 @@ Run `4genteam` to provision isolated git worktrees for each seat:
 ```
 
 This ensures:
-- Seat `dev` operates in `.openrig/agenthub-seats/my-team/wt/dev` on branch `my-team/dev`.
+- Seat `dev` operates in `~/.config/4genthub/rooms/my-team/wt/dev` on branch `my-team/dev`.
 - Seat `reviewer` operates in its own isolated worktree.
 - The shared repository checkout on `main` remains pristine.
 - Git Guard hooks are installed to prevent unauthorized pushes and broad staging.
@@ -74,12 +56,12 @@ This ensures:
 Start the team, background compaction supervisor, and watchdog in one step:
 
 ```bash
-4genteam up my-team
+4genteam up my-team --team ~/teams/my-team
 ```
 
 Check node health:
 ```bash
-rig ps --nodes --rig my-team
+4genteam ps my-team --nodes
 ```
 
 ---

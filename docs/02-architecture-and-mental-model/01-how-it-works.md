@@ -12,15 +12,15 @@ A robust multi-agent orchestration architecture avoids running everything in a t
              │
 [ Tier 2: Machine Client ]
    4genteam (Unified CLI & Background Services)
-      - Starts and syncs rigs
+      - Starts and syncs rooms
       - Delivers skills and enforces isolated git worktrees
       - Runs token compaction supervisor and live terminal feeds
              │
              ▼ Local Unix Sockets / HTTP
-[ Tier 3: Local Orchestrator ]
-   OpenRig Daemon + Runtimes (Claude, agy, omp, dsh)
-      - Supervises seat processes in isolated tmux/herdr panes
-      - Delivers persistent queue items and inter-seat messaging
+[ Tier 3: Local Runtime ]
+   agenthub-runtime (Rust) + agent runtimes (Claude Code, omp, ...)
+      - Runs each seat in a headless PTY; tmux only bridges for attaching
+      - Keeps the room's persistent queue and delivers inter-seat messages
 ```
 
 ---
